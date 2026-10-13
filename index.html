@@ -347,18 +347,15 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <div>
+		<div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-12 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">    
+		<div class="lg:col-span-5">
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Lọc Khu</label>
                         <select id="filter-coc-khu" onchange="renderTienCoc()" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                             <option value="">Tất cả Khu</option>
-                            <option value="A">Khu A</option>
-                            <option value="B">Khu B</option>
-                            <option value="C">Khu C</option>
-                            <option value="D">Khu D</option>
                         </select>
                     </div>
-                    <div>
+	
+                    <div class="lg:col-span-3">
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Lọc Trạng Thái</label>
                         <select id="filter-coc-status" onchange="renderTienCoc()" class="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                             <option value="">Tất cả trạng thái</option>
@@ -368,7 +365,8 @@
                             <option value="has_note">Có ghi chú</option>
                         </select>
                     </div>
-                    <div class="sm:col-span-2">
+
+                    <div class="lg:col-span-4">
                         <label class="block text-xs font-semibold text-slate-600 mb-1">Tìm Kiếm Phòng</label>
                         <input type="text" id="filter-coc-search" oninput="renderTienCoc()" placeholder="Nhập tên phòng cần tìm..." class="w-full px-3.5 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
@@ -1047,6 +1045,15 @@
             return sumThieu;
         }
 
+        function getKhuTotalCocNhan(khuName) {
+            const rooms = db.rooms.filter(r => r.khu === khuName);
+            let sum = 0;
+            rooms.forEach(r => {
+                sum += Number(r.cocNhan) || 0;
+            });
+            return sum;
+        }
+           
         function updateLsgdKhuSelectOptions() {
             const selectKhu = document.getElementById('filter-lsgd-khu');
             if (!selectKhu) return;
@@ -1261,6 +1268,7 @@
         }
 
         function renderTienCoc() {
+	    updateCocKhuSelectOptions();
             const tbody = document.getElementById('table-coc-body');
             tbody.innerHTML = '';
 
@@ -1521,10 +1529,10 @@
                     rowsHtml += `
                         <tr class="hover:bg-slate-50 transition">
                             <td class="p-3">
-                                <div class="flex items-center gap-1.5">
-                                    <input type="text" value="${row.noiDung}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
-                                    <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
-                                        <option value="">Chọn mục </option>
+                               <div class="flex items-center gap-1.5">
+                                  <input type="text" value="${row.noiDung}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
+                                  <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
+                                     <option value="">Chọn mục </option>
                                         <optgroup label="--- TỔNG KHU ---">
                                             <option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>
                                             <option value="B">Tổng Khu B (${formatNumber(getKhuTotal('B'))})</option>
@@ -1543,6 +1551,11 @@
                                             <option value="RAC_C">Tổng Rác Khu C (${formatNumber(getKhuTotalRac('C'))})</option>
                                             <option value="RAC_D">Tổng Rác Khu D (${formatNumber(getKhuTotalRac('D'))})</option>
                                         </optgroup>
+                                        <optgroup label="--- TỔNG CỌC KHU ---">
+						<option value="COC_NHAN_A">Tổng cọc đã nhận Khu A (${formatNumber(getKhuTotalCocNhan('A'))})</option>
+    						<option value="COC_NHAN_B">Tổng cọc đã nhận Khu B (${formatNumber(getKhuTotalCocNhan('B'))})</option>
+   						<option value="COC_NHAN_C">Tổng cọc đã nhận Khu C (${formatNumber(getKhuTotalCocNhan('C'))})</option>
+    						<option value="COC_NHAN_D">Tổng cọc đã nhận Khu D (${formatNumber(getKhuTotalCocNhan('D'))})</option>
                                     </select>
                                 </div>
                             </td>
@@ -1641,6 +1654,11 @@
                 const totalThieu = getKhuTotalThieu(khuName);
                 table.rows[index].noiDung = `tiền trọ còn thiếu khu ${khuName}`;
                 table.rows[index].soTien = -Math.abs(totalThieu);
+	    } else if (selectedValue.startsWith('COC_NHAN_')) {
+        	const khuName = selectedValue.replace('COC_NHAN_', '');
+        	const totalCoc = getKhuTotalCocNhan(khuName);
+        	table.rows[index].noiDung = `Tổng Cọc Đã Nhận Khu ${khuName}`;
+        	table.rows[index].soTien = totalCoc;
             } else {
                 const khuName = selectedValue;
                 const totalKhu = getKhuTotal(khuName);
@@ -1956,6 +1974,26 @@
 
             document.body.appendChild(wrapper);
             generateAndDownloadPDF(wrapper, `Bang_Ke_Tien_Tro_Khu_${khuName}_${getCurrentDateDDMMYYYY().replace(/\//g, '-')}.pdf`);
+        }
+function updateCocKhuSelectOptions() {
+            const selectKhu = document.getElementById('filter-coc-khu');
+            if (!selectKhu) return;
+            const currentVal = selectKhu.value;
+
+            const cocA = getKhuTotalCocNhan('A');
+            const cocB = getKhuTotalCocNhan('B');
+            const cocC = getKhuTotalCocNhan('C');
+            const cocD = getKhuTotalCocNhan('D');
+            const tongTatCa = cocA + cocB + cocC + cocD;
+
+            selectKhu.innerHTML = `
+                <option value="">Tất cả Khu (Đã nhận: ${formatNumber(tongTatCa)} đ)</option>
+                <option value="A">Khu A (Đã nhận: ${formatNumber(cocA)} đ)</option>
+                <option value="B">Khu B (Đã nhận: ${formatNumber(cocB)} đ)</option>
+                <option value="C">Khu C (Đã nhận: ${formatNumber(cocC)} đ)</option>
+                <option value="D">Khu D (Đã nhận: ${formatNumber(cocD)} đ)</option>
+            `;
+            selectKhu.value = currentVal;
         }
 
         function xuatCocPDF() {
