@@ -53,7 +53,6 @@
             background: #94a3b8;
         }
 
-        /* An mui ten tang giam cua tat ca o input type="number" */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none !important;
@@ -64,13 +63,14 @@
             appearance: textfield !important;
         }
 
-        /* Dinh dang cho ban PDF xuat ra */
         .pdf-export-container {
-            font-family: 'Inter', Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
             color: #1e293b;
             background: #ffffff;
             padding: 15px;
             width: 100%;
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
         }
         .pdf-export-container table {
             width: 100%;
@@ -137,17 +137,13 @@
                 </div>
             </div>
             
-<div class="flex flex-wrap items-center gap-2">
-	<!-- Nút Khóa Trang Nhanh -->
-    		<button onclick="lockApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-slate-300 shadow-xs" title="Tạm khóa màn hình">
-        	<i class="fa-solid fa-lock text-amber-600"></i> Khóa Trang
-    </button>
-	<!-- Nút Đổi Mật Khẩu -->
-    		<button onclick="openChangePasswordModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-slate-300 shadow-xs" title="Đổi mật khẩu truy cập">
-        	<i class="fa-solid fa-key text-emerald-600"></i> Đổi Mật Khẩu
-    </button>
-</div>
-            
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="lockApp()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-slate-300 shadow-xs" title="Tạm khóa màn hình">
+                    <i class="fa-solid fa-lock text-amber-600"></i> Khóa Trang
+                </button>
+                <button onclick="openChangePasswordModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 border border-slate-300 shadow-xs" title="Đổi mật khẩu truy cập">
+                    <i class="fa-solid fa-key text-emerald-600"></i> Đổi Mật Khẩu
+                </button>
             </div>
         </div>
 
@@ -240,13 +236,13 @@
                     <button onclick="chuyenThangKhu('A')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-3.5 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> Chuyển Tháng Khu A
                     </button>
-                    <button onclick="openAddRoomModalKhu('A')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="openAddRoomModalKhu('A')" class="bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-300 hover:from-blue-300 hover:to-indigo-400 text-blue-950 font-semibold border border-blue-400/80 px-3.5 py-2 rounded-lg text-sm shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-plus"></i> Thêm Phòng Khu A
                     </button>
                     <button onclick="xuatKhuExcel('A')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-file-excel"></i> Xuất Khu A
                     </button>
-                    <button onclick="xuatKhuPDF('A')" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="xuatKhuPDF('A')" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-file-pdf"></i> Xuất PDF Khu A
                     </button>
                 </div>
@@ -266,13 +262,13 @@
                     <button onclick="chuyenThangKhu('B')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-3.5 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> Chuyển Tháng Khu B
                     </button>
-                    <button onclick="openAddRoomModalKhu('B')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="openAddRoomModalKhu('B')" class="bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-300 hover:from-blue-300 hover:to-indigo-400 text-blue-950 font-semibold border border-blue-400/80 px-3.5 py-2 rounded-lg text-sm shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-plus"></i> Thêm Phòng Khu B
                     </button>
                     <button onclick="xuatKhuExcel('B')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-file-excel"></i> Xuất Khu B
                     </button>
-                    <button onclick="xuatKhuPDF('B')" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="xuatKhuPDF('B')" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-file-pdf"></i> Xuất PDF Khu B
                     </button>
                 </div>
@@ -292,13 +288,13 @@
                     <button onclick="chuyenThangKhu('C')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-3.5 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> Chuyển Tháng Khu C
                     </button>
-                    <button onclick="openAddRoomModalKhu('C')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="openAddRoomModalKhu('C')" class="bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-300 hover:from-blue-300 hover:to-indigo-400 text-blue-950 font-semibold border border-blue-400/80 px-3.5 py-2 rounded-lg text-sm shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-plus"></i> Thêm Phòng Khu C
                     </button>
                     <button onclick="xuatKhuExcel('C')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-file-excel"></i> Xuất Khu C
                     </button>
-                    <button onclick="xuatKhuPDF('C')" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="xuatKhuPDF('C')" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-file-pdf"></i> Xuất PDF Khu C
                     </button>
                 </div>
@@ -318,13 +314,13 @@
                     <button onclick="chuyenThangKhu('D')" class="bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 px-3.5 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2">
                         <i class="fa-solid fa-calendar-days"></i> Chuyển Tháng Khu D
                     </button>
-                    <button onclick="openAddRoomModalKhu('D')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="openAddRoomModalKhu('D')" class="bg-gradient-to-r from-blue-200 via-sky-300 to-indigo-300 hover:from-blue-300 hover:to-indigo-400 text-blue-950 font-semibold border border-blue-400/80 px-3.5 py-2 rounded-lg text-sm shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-plus"></i> Thêm Phòng Khu D
                     </button>
                     <button onclick="xuatKhuExcel('D')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-file-excel"></i> Xuất Khu D
                     </button>
-                    <button onclick="xuatKhuPDF('D')" class="bg-rose-600 hover:bg-rose-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                    <button onclick="xuatKhuPDF('D')" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                         <i class="fa-solid fa-file-pdf"></i> Xuất PDF Khu D
                     </button>
                 </div>
@@ -345,7 +341,7 @@
                         <button onclick="xuatCocExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
                             <i class="fa-solid fa-file-excel"></i> Xuất Cọc Excel
                         </button>
-                        <button onclick="xuatCocPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                        <button onclick="xuatCocPDF()" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf"></i> Xuất Cọc PDF
                         </button>
                     </div>
@@ -369,7 +365,7 @@
                             <option value="thua">Thừa cọc</option>
                             <option value="thieu">Thiếu cọc</option>
                             <option value="du">Đủ cọc</option>
-			    <option value="has_note">Có ghi chú</option>
+                            <option value="has_note">Có ghi chú</option>
                         </select>
                     </div>
                     <div class="sm:col-span-2">
@@ -383,13 +379,13 @@
                         <thead class="sticky top-0 z-10 bg-slate-100 shadow-xs">
                             <tr class="text-slate-700 font-semibold border-b border-slate-200">
                                 <th class="p-3 w-20">Khu</th>
-			        <th class="p-3 w-20">Phòng</th>         
-			        <th class="p-3 text-right">Cọc Cần Thu</th>
-			        <th class="p-3 text-right">Cọc Đã Nhận</th>
-			        <th class="p-3 text-right">Thừa / Thiếu</th>
-			        <th class="p-3 w-52">Ghi Nhận Cọc Đóng</th>
-			        <th class="p-3 w-96">GHI CHÚ</th>
-				<th class="p-3 w-20 text-center">Đủ Cọc</th>
+                                <th class="p-3 w-20">Phòng</th>         
+                                <th class="p-3 text-right">Cọc Cần Thu</th>
+                                <th class="p-3 text-right">Cọc Đã Nhận</th>
+                                <th class="p-3 text-right">Thừa / Thiếu</th>
+                                <th class="p-3 w-52">Ghi Nhận Cọc Đóng</th>
+                                <th class="p-3 w-96">GHI CHÚ</th>
+                                <th class="p-3 w-20 text-center">Đủ Cọc</th>
                             </tr>
                         </thead>
                         <tbody id="table-coc-body" class="divide-y divide-slate-200">
@@ -410,7 +406,7 @@
                         <p class="text-xs text-slate-500">Theo dõi tiến độ thanh toán tiền thuê từng tháng của khách theo từng Khu</p>
                     </div>
                     <div>
-                        <button onclick="xuatLichSuPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                        <button onclick="xuatLichSuPDF()" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf"></i> Xuất PDF Lịch Sử
                         </button>
                     </div>
@@ -423,7 +419,7 @@
                             <option value="">Tất cả (Còn thiếu & Đóng đủ)</option>
                             <option value="thieu">Còn thiếu</option>
                             <option value="du">Đóng đủ</option>
-			    <option value="has_note">Có ghi chú</option>
+                            <option value="has_note">Có ghi chú</option>
                         </select>
                     </div>
                     <div>
@@ -464,7 +460,7 @@
                         <p class="text-xs text-slate-500">Các hóa đơn đơn giản chuyển từ tab Thanh toán (không chỉnh sửa được, có thể xóa)</p>
                     </div>
                     <div>
-                        <button onclick="xuatChotThangPDF()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2">
+                        <button onclick="xuatChotThangPDF()" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf"></i> Xuất PDF Chốt Tháng
                         </button>
                     </div>
@@ -521,8 +517,6 @@
     </div>
 
     <script>
-
-// Lấy mật khẩu từ bộ nhớ đã đồng bộ Supabase
         function getAppPassword() {
             return (db.globalPrices && db.globalPrices.appPassword) || localStorage.getItem('custom_app_password') || "123456";
         }
@@ -534,8 +528,6 @@
                 document.getElementById('auth-overlay').classList.add('hidden');
                 pwdInput.value = '';
                 if (errorMsg) errorMsg.classList.add('hidden');
-                
-                // Lưu trạng thái đăng nhập theo phiên (F5 không mất)
                 sessionStorage.setItem('app_authenticated', 'true');
             } else if (errorMsg) {
                 errorMsg.classList.remove('hidden');
@@ -588,11 +580,8 @@
                 return;
             }
 
-            // 1. Cập nhật vào biến local
             db.globalPrices.appPassword = newPwd;
             localStorage.setItem('custom_app_password', newPwd);
-
-            // 2. Đồng bộ mật khẩu mới lên Supabase ngay lập tức
             await saveLocalStorage();
 
             closeChangePasswordModal();
@@ -608,7 +597,7 @@
 
         let db = {
             globalPrices: {
-		appPassword: "123456", // Thêm dòng này (mật khẩu mặc định)
+                appPassword: "123456",
                 giaPhong: 4000000,
                 net1: 60000,
                 net2: 50000,
@@ -653,182 +642,174 @@
             });
         }
 
-// =========================================================================
-// CẤU HÌNH KẾT NỐI SUPABASE ONLINE - KHU TRỌ VƯỜN XUÂN
-// =========================================================================
-const SUPABASE_URL = "https://azbqsbvhhzeuebxhzhmz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_V61Wul0zSv_38j6FHTO9xg_GLfezd9G";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_URL = "https://azbqsbvhhzeuebxhzhmz.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_V61Wul0zSv_38j6FHTO9xg_GLfezd9G";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadLocalStorage() {
-    console.log("Đang tải dữ liệu từ Supabase...");
-    try {
-        const { data: resGia } = await supabaseClient.from('cau_hinh_gia').select('*').eq('id', 1).single();
-        if (resGia) {
-            db.globalPrices = {
-		appPassword: resGia.app_password || "123456", // Đọc mật khẩu từ Supabase
-                giaPhong: resGia.gia_phong_mac_dinh,
-                net1: resGia.gia_net_1,
-                net2: resGia.gia_net_2,
-                racNhieu: resGia.gia_rac_lon,
-                racIt: resGia.gia_rac_nho,
-                dien: resGia.gia_dien,
-                nuoc: resGia.gia_nuoc
-            };
-        }
+        async function loadLocalStorage() {
+            try {
+                const { data: resGia } = await supabaseClient.from('cau_hinh_gia').select('*').eq('id', 1).single();
+                if (resGia) {
+                    db.globalPrices = {
+                        appPassword: resGia.app_password || "123456",
+                        giaPhong: resGia.gia_phong_mac_dinh,
+                        net1: resGia.gia_net_1,
+                        net2: resGia.gia_net_2,
+                        racNhieu: resGia.gia_rac_lon,
+                        racIt: resGia.gia_rac_nho,
+                        dien: resGia.gia_dien,
+                        nuoc: resGia.gia_nuoc
+                    };
+                }
 
-        const { data: resPhong } = await supabaseClient.from('phong_trans_tro').select('*');
-        if (resPhong) {
-            db.rooms = resPhong.map(r => ({
-                id: r.id,
-                khu: r.khu,
-                name: r.name,
-                giaPhong: r.gia_phong,
-                netType: r.net_type,
-                racType: r.rac_type,
-                dienCu: r.dien_cu,
-                dienMoi: r.dien_moi,
-                nuocCu: r.nuoc_cu,
-                nuocMoi: r.nuoc_moi,
-                tienKhac: r.tien_khac,
-                ghiChu: r.ghi_chu,
-                cocNote: r.coc_note || '',
-                showNote: r.show_note,
-                cocNhan: r.coc_nhan,
-                ngayVao: r.ngay_vao,
-                ngayDi: r.ngay_di,
-                daThuMoney: r.da_thu_money,
-                lsgdNote: r.lsgd_note,
-                duCoc: r.du_coc || false
-            }));
-        }
+                const { data: resPhong } = await supabaseClient.from('phong_trans_tro').select('*');
+                if (resPhong) {
+                    db.rooms = resPhong.map(r => ({
+                        id: r.id,
+                        khu: r.khu,
+                        name: r.name,
+                        giaPhong: r.gia_phong,
+                        netType: r.net_type,
+                        racType: r.rac_type,
+                        dienCu: r.dien_cu,
+                        dienMoi: r.dien_moi,
+                        nuocCu: r.nuoc_cu,
+                        nuocMoi: r.nuoc_moi,
+                        tienKhac: r.tien_khac,
+                        ghiChu: r.ghi_chu,
+                        cocNote: r.coc_note || '',
+                        showNote: r.show_note,
+                        cocNhan: r.coc_nhan,
+                        ngayVao: r.ngay_vao,
+                        ngayDi: r.ngay_di,
+                        daThuMoney: r.da_thu_money,
+                        lsgdNote: r.lsgd_note,
+                        duCoc: r.du_coc || false
+                    }));
+                }
 
-        const { data: resThanhToan } = await supabaseClient.from('bang_thanh_toan').select('*');
-        db.thanhToanTables = [
-            { title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-            { title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-            { title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
-        ];
-        if (resThanhToan) {
-            resThanhToan.forEach(row => {
-                const idx = row.table_index;
-                if (db.thanhToanTables[idx]) {
-                    db.thanhToanTables[idx].rows.push({
-                        id: row.id,
-                        noiDung: row.noi_dung,
-                        soTien: row.so_tien,
-                        thoiGian: row.thoi_gian,
-                        ghiChu: row.ghi_chu
+                const { data: resThanhToan } = await supabaseClient.from('bang_thanh_toan').select('*');
+                db.thanhToanTables = [
+                    { title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+                    { title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+                    { title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
+                ];
+                if (resThanhToan) {
+                    resThanhToan.forEach(row => {
+                        const idx = row.table_index;
+                        if (db.thanhToanTables[idx]) {
+                            db.thanhToanTables[idx].rows.push({
+                                id: row.id,
+                                noiDung: row.noi_dung,
+                                soTien: row.so_tien,
+                                thoiGian: row.thoi_gian,
+                                ghiChu: row.ghi_chu
+                            });
+                        }
                     });
                 }
-            });
+
+                const { data: resInvoices } = await supabaseClient.from('hoa_don_chot_thang').select('*, chi_tiet_hoa_don(*)').order('id', { ascending: false });
+                if (resInvoices) {
+                    db.chotThangInvoices = resInvoices.map(inv => ({
+                        id: inv.id,
+                        monthYear: inv.month_year,
+                        grandTotal: inv.grand_total,
+                        createdAt: inv.ngay_tao_chuoi,
+                        rows: (inv.chi_tiet_hoa_don || []).map(d => ({
+                            noiDung: d.noi_dung,
+                            soTien: d.so_tien,
+                            thoiGian: d.thoi_gian,
+                            ghiChu: d.ghi_chu
+                        }))
+                    }));
+                }
+
+                initGlobalInputs();
+            } catch (err) {
+                console.error("Lỗi tải dữ liệu từ Supabase:", err);
+            }
+            sortRoomsAlphabetically();
+            renderAllTabs();
         }
 
-        const { data: resInvoices } = await supabaseClient.from('hoa_don_chot_thang').select('*, chi_tiet_hoa_don(*)').order('id', { ascending: false });
-        if (resInvoices) {
-            db.chotThangInvoices = resInvoices.map(inv => ({
-                id: inv.id,
-                monthYear: inv.month_year,
-                grandTotal: inv.grand_total,
-                createdAt: inv.ngay_tao_chuoi,
-                rows: (inv.chi_tiet_hoa_don || []).map(d => ({
-                    noiDung: d.noi_dung,
-                    soTien: d.so_tien,
-                    thoiGian: d.thoi_gian,
-                    ghiChu: d.ghi_chu
-                }))
-            }));
-        }
-
-        initGlobalInputs();
-        console.log("Đã đồng bộ toàn bộ dữ liệu online từ Supabase!");
-    } catch (err) {
-        console.error("Lỗi tải dữ liệu từ Supabase:", err);
-    }
-    sortRoomsAlphabetically();
-    renderAllTabs();
-}
-
-async function saveLocalStorage() {
-    sortRoomsAlphabetically();
-    console.log("Đang tự động sao lưu dữ liệu lên Supabase...");
-    try {
-        const gp = db.globalPrices;
-        await supabaseClient.from('cau_hinh_gia').upsert({
-            id: 1,
-	    app_password: gp.appPassword || "123456", // Lưu mật khẩu lên Supabase
-            gia_phong_mac_dinh: gp.giaPhong,
-            gia_net_1: gp.net1,
-            gia_net_2: gp.net2,
-            gia_rac_lon: gp.racNhieu,
-            gia_rac_nho: gp.racIt,
-            gia_dien: gp.dien,
-            gia_nuoc: gp.nuoc
-        });
-
-        if (db.rooms.length >= 0) {
-            const dataRooms = db.rooms.map(r => ({
-                id: r.id,
-                khu: r.khu,
-                name: r.name,
-                gia_phong: r.giaPhong,
-                net_type: r.netType,
-                rac_type: r.racType,
-                dien_cu: r.dienCu,
-                dien_moi: r.dienMoi,
-                nuoc_cu: r.nuocCu,
-                nuoc_moi: r.nuocMoi,
-                tien_khac: r.tienKhac,
-                ghi_chu: r.ghiChu || '',
-                coc_note: r.cocNote || '',
-                show_note: r.showNote,
-                coc_nhan: r.cocNhan,
-                ngay_vao: r.ngayVao || '',
-                ngay_di: r.ngayDi || '',
-                da_thu_money: r.daThuMoney,
-                lsgd_note: r.lsgdNote || '',
-                du_coc: r.duCoc || false
-            }));
-            await supabaseClient.from('phong_trans_tro').upsert(dataRooms);
-        }
-
-        await supabaseClient.from('bang_thanh_toan').delete().neq('id', 0);
-        let dataThanhToanRows = [];
-        db.thanhToanTables.forEach((table, tIndex) => {
-            table.rows.forEach(row => {
-                dataThanhToanRows.push({
-                    table_index: tIndex,
-                    noi_dung: row.noiDung,
-                    so_tien: row.soTien, 
-                    thoi_gian: row.thoiGian,
-                    ghi_chu: row.ghiChu || ''
+        async function saveLocalStorage() {
+            sortRoomsAlphabetically();
+            try {
+                const gp = db.globalPrices;
+                await supabaseClient.from('cau_hinh_gia').upsert({
+                    id: 1,
+                    app_password: gp.appPassword || "123456",
+                    gia_phong_mac_dinh: gp.giaPhong,
+                    gia_net_1: gp.net1,
+                    gia_net_2: gp.net2,
+                    gia_rac_lon: gp.racNhieu,
+                    gia_rac_nho: gp.racIt,
+                    gia_dien: gp.dien,
+                    gia_nuoc: gp.nuoc
                 });
-            });
-        });
-        if (dataThanhToanRows.length > 0) {
-            await supabaseClient.from('bang_thanh_toan').insert(dataThanhToanRows);
+
+                if (db.rooms.length >= 0) {
+                    const dataRooms = db.rooms.map(r => ({
+                        id: r.id,
+                        khu: r.khu,
+                        name: r.name,
+                        gia_phong: r.giaPhong,
+                        net_type: r.netType,
+                        rac_type: r.racType,
+                        dien_cu: r.dienCu,
+                        dien_moi: r.dienMoi,
+                        nuoc_cu: r.nuocCu,
+                        nuoc_moi: r.nuocMoi,
+                        tien_khac: r.tienKhac,
+                        ghi_chu: r.ghiChu || '',
+                        coc_note: r.cocNote || '',
+                        show_note: r.showNote,
+                        coc_nhan: r.cocNhan,
+                        ngay_vao: r.ngayVao || '',
+                        ngay_di: r.ngayDi || '',
+                        da_thu_money: r.daThuMoney,
+                        lsgd_note: r.lsgdNote || '',
+                        du_coc: r.duCoc || false
+                    }));
+                    await supabaseClient.from('phong_trans_tro').upsert(dataRooms);
+                }
+
+                await supabaseClient.from('bang_thanh_toan').delete().neq('id', 0);
+                let dataThanhToanRows = [];
+                db.thanhToanTables.forEach((table, tIndex) => {
+                    table.rows.forEach(row => {
+                        dataThanhToanRows.push({
+                            table_index: tIndex,
+                            noi_dung: row.noiDung,
+                            so_tien: row.soTien, 
+                            thoi_gian: row.thoiGian,
+                            ghi_chu: row.ghiChu || ''
+                        });
+                    });
+                });
+                if (dataThanhToanRows.length > 0) {
+                    await supabaseClient.from('bang_thanh_toan').insert(dataThanhToanRows);
+                }
+            } catch (err) {
+                console.error("Lỗi tự động sao lưu lên Supabase:", err);
+            }
         }
-    } catch (err) {
-        console.error("Lỗi tự động sao lưu lên Supabase:", err);
-    }
-}
+
         function formatNumber(num) {
             if (isNaN(num) || num === null || num === undefined) return "0";
             return Number(num).toLocaleString('en-US');
         }
 
         function parseNumber(str) {
-    if (!str) return 0;
-    let clean = String(str).replace(/,/g, '').trim();
-    
-    // Nếu người dùng gõ dạng 0-545 hoặc 0 -545, tự chuyển thành -545
-    if (/^0\s*-\d+/.test(clean)) {
-        clean = clean.replace(/^0\s*/, '');
-    }
-    
-    const val = parseFloat(clean);
-    return isNaN(val) ? 0 : val;
-}
+            if (!str) return 0;
+            let clean = String(str).replace(/,/g, '').trim();
+            if (/^0\s*-\d+/.test(clean)) {
+                clean = clean.replace(/^0\s*/, '');
+            }
+            const val = parseFloat(clean);
+            return isNaN(val) ? 0 : val;
+        }
 
         function showAlert(title, message, isSuccess = true) {
             const modal = document.getElementById('custom-alert-modal');
@@ -894,7 +875,7 @@ async function saveLocalStorage() {
         function saveGlobalPrices() {
             db.globalPrices = {
                 appPassword: db.globalPrices?.appPassword || "123456",
-		giaPhong: parseNumber(document.getElementById('global-gia-phong').value),
+                giaPhong: parseNumber(document.getElementById('global-gia-phong').value),
                 net1: parseNumber(document.getElementById('global-net-1').value),
                 net2: parseNumber(document.getElementById('global-net-2').value),
                 racNhieu: parseNumber(document.getElementById('global-rac-nhieu').value),
@@ -910,7 +891,7 @@ async function saveLocalStorage() {
             const gp = db.globalPrices;
             db.rooms.forEach(r => {
                 r.giaPhong = gp.giaPhong;
-                r.duCoc = false; // Tự động gỡ cờ đủ cọc khi áp dụng lại giá chung toàn hệ thống
+                r.duCoc = false;
             });
             saveLocalStorage();
             renderAllTabs();
@@ -990,22 +971,22 @@ async function saveLocalStorage() {
             showAlert("Thành Công", `Đã thêm phòng ${name} vào Khu ${khu}!`);
         }
 
-async function deleteRoom(id) {
-    const room = db.rooms.find(r => r.id === id);
-    if (!room) return;
-    if (confirm(`Bạn có chắc chắn muốn xóa phòng ${room.name} (Khu ${room.khu}) không?`)) {
-        try {
-            await supabaseClient.from('phong_trans_tro').delete().eq('id', id);
-        } catch(e) {
-            console.error("Lỗi xóa phòng trên Supabase:", e);
-        }
+        async function deleteRoom(id) {
+            const room = db.rooms.find(r => r.id === id);
+            if (!room) return;
+            if (confirm(`Bạn có chắc chắn muốn xóa phòng ${room.name} (Khu ${room.khu}) không?`)) {
+                try {
+                    await supabaseClient.from('phong_trans_tro').delete().eq('id', id);
+                } catch(e) {
+                    console.error("Lỗi xóa phòng trên Supabase:", e);
+                }
 
-        db.rooms = db.rooms.filter(r => r.id !== id);
-        saveLocalStorage();
-        renderAllTabs();
-        showAlert("Thành Công", "Đã xóa phòng thành công!");
-    }
-}
+                db.rooms = db.rooms.filter(r => r.id !== id);
+                saveLocalStorage();
+                renderAllTabs();
+                showAlert("Thành Công", "Đã xóa phòng thành công!");
+            }
+        }
 
         function calcRoomTotals(r) {
             const gp = db.globalPrices;
@@ -1106,7 +1087,6 @@ async function deleteRoom(id) {
                     room[prop] = val;
                 } else {
                     const parsedVal = parseNumber(val);
-                    // Nếu thay đổi giá phòng thì tự động hủy trạng thái đủ cọc để kiểm tra lại tính chính xác
                     if (prop === 'giaPhong' && Number(room.giaPhong) !== Number(parsedVal)) {
                         room.giaPhong = parsedVal;
                         room.duCoc = false;
@@ -1193,14 +1173,14 @@ async function deleteRoom(id) {
                         </td>
                         <td class="p-2.5 text-center">
                             <button onclick="toggleRoomNote('${r.id}')" 
-    class="p-1.5 rounded-lg transition ${
-        r.ghiChu && r.ghiChu.trim() !== '' 
-            ? 'bg-amber-100 text-amber-600 border border-amber-300 font-bold' 
-            : r.showNote 
-                ? 'bg-emerald-100 text-emerald-700' 
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-    }" 
-    title="${r.ghiChu && r.ghiChu.trim() !== '' ? 'Ghi chú: ' + r.ghiChu : 'Nhập ghi chú phát sinh'}">
+                                class="p-1.5 rounded-lg transition ${
+                                    r.ghiChu && r.ghiChu.trim() !== '' 
+                                        ? 'bg-amber-100 text-amber-600 border border-amber-300 font-bold' 
+                                        : r.showNote 
+                                            ? 'bg-emerald-100 text-emerald-700' 
+                                            : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                }" 
+                                title="${r.ghiChu && r.ghiChu.trim() !== '' ? 'Ghi chú: ' + r.ghiChu : 'Nhập ghi chú phát sinh'}">
                                 <i class="fa-solid fa-note-sticky"></i>
                             </button>
                         </td>
@@ -1274,7 +1254,7 @@ async function deleteRoom(id) {
                 if (statusFilter === 'thua') matchStatus = diff > 0;
                 else if (statusFilter === 'thieu') matchStatus = (diff < 0 && !r.duCoc);
                 else if (statusFilter === 'du') matchStatus = (diff === 0 || Boolean(r.duCoc));
-		else if (statusFilter === 'has_note') matchStatus = Boolean(r.cocNote && r.cocNote.trim() !== '');
+                else if (statusFilter === 'has_note') matchStatus = Boolean(r.cocNote && r.cocNote.trim() !== '');
 
                 return matchKhu && matchSearch && matchStatus;
             });
@@ -1290,8 +1270,6 @@ async function deleteRoom(id) {
                 const cocCanThu = Number(r.giaPhong) || 0;
                 const cocNhan = Number(r.cocNhan) || 0;
                 const conThuaThieuGoc = cocNhan - cocCanThu;
-                
-                // Nếu tích "Đủ cọc" linh động thì hiển thị giao diện là 0 đ
                 const conThuaThieuHienThi = r.duCoc ? 0 : conThuaThieuGoc;
 
                 let badgeColor = "text-slate-700 bg-slate-100";
@@ -1387,7 +1365,7 @@ async function deleteRoom(id) {
                     let matchStatus = true;
                     if (statusFilter === 'thieu') matchStatus = conLai > 0;
                     else if (statusFilter === 'du') matchStatus = isDu;
-		    else if (statusFilter === 'has_note') matchStatus = Boolean(r.lsgdNote && r.lsgdNote.trim() !== '')
+                    else if (statusFilter === 'has_note') matchStatus = Boolean(r.lsgdNote && r.lsgdNote.trim() !== '');
 
                     const matchSearch = r.name.toLowerCase().includes(searchVal);
 
@@ -1519,34 +1497,17 @@ async function deleteRoom(id) {
             }
         }
 
-    	function renderThanhToan() {
-	
-// 1. Lưu lại vị trí cuộn của TỪNG bảng trước khi render lại
-    const scrollContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
-    const savedScrollPositions = Array.from(scrollContainers).map(el => el.scrollTop);
+        function renderThanhToan() {
+            const scrollContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
+            const savedScrollPositions = Array.from(scrollContainers).map(el => el.scrollTop);
 
-    const wrapper = document.getElementById('thanh-toan-tables-wrapper');
-    wrapper.innerHTML = '';
-
-    db.thanhToanTables.forEach((table, tIndex) => {
-        // --- (Giữ nguyên toàn bộ code tạo card và render các hàng hiện tại của bạn ở đây) ---
-        // ...
-    });
-
-    // 2. Khôi phục lại vị trí cuộn cho từng bảng tương ứng sau khi vẽ xong DOM
-    setTimeout(() => {
-        const newContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
-        newContainers.forEach((el, idx) => {
-            if (savedScrollPositions[idx] !== undefined) {
-                el.scrollTop = savedScrollPositions[idx];
-            }
-        });
-    }, 0);
+            const wrapper = document.getElementById('thanh-toan-tables-wrapper');
             wrapper.innerHTML = '';
+
             db.thanhToanTables.forEach((table, tIndex) => {
                 let grandTotal = table.rows.reduce((sum, r) => sum + (Number(r.soTien) || 0), 0);
-		const isGrandTotalNegative = grandTotal < 0;
-		const grandTotalColorClass = isGrandTotalNegative ? 'text-rose-600' : 'text-emerald-700';
+                const isGrandTotalNegative = grandTotal < 0;
+                const grandTotalColorClass = isGrandTotalNegative ? 'text-rose-600' : 'text-emerald-700';
 
                 const card = document.createElement('div');
                 card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6";
@@ -1561,9 +1522,8 @@ async function deleteRoom(id) {
                         <tr class="hover:bg-slate-50 transition">
                             <td class="p-3">
                                 <div class="flex items-center gap-1.5">
-                                    <input type="text" value="${row.noiDung}" 							onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
+                                    <input type="text" value="${row.noiDung}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
                                     <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
-
                                         <option value="">Chọn mục </option>
                                         <optgroup label="--- TỔNG KHU ---">
                                             <option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>
@@ -1587,12 +1547,12 @@ async function deleteRoom(id) {
                                 </div>
                             </td>
                             <td class="p-3">
-                              <input type="text" value="${formatNumber(row.soTien)}" 
-   				onfocus="this.value = (db.thanhToanTables[${tIndex}].rows[${index}].soTien === 0) ? '' : db.thanhToanTables[${tIndex}].rows[${index}].soTien; this.select();" 
-   				onblur="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
- 				onchange="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
- 				onkeyup="if(event.key === 'Enter') this.blur();"
-  				placeholder="0" class="w-42 px-3 py-1.5 border rounded bg-white text-xs text-right ${soTienColorClass}">
+                                <input type="text" value="${formatNumber(row.soTien)}" 
+                                    onfocus="this.value = (db.thanhToanTables[${tIndex}].rows[${index}].soTien === 0) ? '' : db.thanhToanTables[${tIndex}].rows[${index}].soTien; this.select();" 
+                                    onblur="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
+                                    onchange="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
+                                    onkeyup="if(event.key === 'Enter') this.blur();"
+                                    placeholder="0" class="w-42 px-3 py-1.5 border rounded bg-white text-xs text-right ${soTienColorClass}">
                             </td>
                             <td class="p-3">
                                 <input type="text" value="${row.thoiGian}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'thoiGian', this.value)" placeholder="dd/mm/yyyy" class="w-32 px-3 py-1.5 border rounded bg-white text-xs">
@@ -1655,6 +1615,15 @@ async function deleteRoom(id) {
 
                 wrapper.appendChild(card);
             });
+
+            setTimeout(() => {
+                const newContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
+                newContainers.forEach((el, idx) => {
+                    if (savedScrollPositions[idx] !== undefined) {
+                        el.scrollTop = savedScrollPositions[idx];
+                    }
+                });
+            }, 0);
         }
 
         function chonTongKhuThanhToan3(tIndex, index, selectedValue) {
@@ -1684,7 +1653,7 @@ async function deleteRoom(id) {
         }
 
         function themHangThanhToan3(tIndex, event) {
-	  if (event) event.preventDefault();
+            if (event) event.preventDefault();
             db.thanhToanTables[tIndex].rows.push({
                 id: Date.now(),
                 noiDung: '',
@@ -1696,20 +1665,16 @@ async function deleteRoom(id) {
             renderThanhToan();
         }
 
-       function updateThanhToanRow3(tIndex, index, field, val) {
-    const table = db.thanhToanTables[tIndex];
-    if (field === 'soTien') {
-        table.rows[index][field] = parseNumber(val);
-    } else {
-        table.rows[index][field] = val;
-    }
-    // Tự động lưu ngầm vào Supabase ngay khi bạn nhập chữ/số
-    saveLocalStorage();
-
-    // Render lại giao diện ngay lập tức để cập nhật tổng tiền và định dạng số
-    renderThanhToan();
-}
-
+        function updateThanhToanRow3(tIndex, index, field, val) {
+            const table = db.thanhToanTables[tIndex];
+            if (field === 'soTien') {
+                table.rows[index][field] = parseNumber(val);
+            } else {
+                table.rows[index][field] = val;
+            }
+            saveLocalStorage();
+            renderThanhToan();
+        }
 
         function xoaHangThanhToan3(tIndex, index) {
             db.thanhToanTables[tIndex].rows.splice(index, 1);
@@ -1724,50 +1689,49 @@ async function deleteRoom(id) {
             showAlert("Đã Xóa", `Bảng ${tIndex + 1} đã được làm trống.`);
         }
 
-async function luuLichSuThang3(tIndex) {
-    const table = db.thanhToanTables[tIndex];
-    if (table.rows.length === 0) {
-        showAlert("Lỗi", "Không có nội dung thanh toán nào trong bảng này để lưu!", false);
-        return;
-    }
+        async function luuLichSuThang3(tIndex) {
+            const table = db.thanhToanTables[tIndex];
+            if (table.rows.length === 0) {
+                showAlert("Lỗi", "Không có nội dung thanh toán nào trong bảng này để lưu!", false);
+                return;
+            }
 
-    let grandTotal = table.rows.reduce((acc, row) => acc + (Number(row.soTien) || 0), 0);
-    const bangName = table.title.split(':')[0] || 'Bảng';
+            let grandTotal = table.rows.reduce((acc, row) => acc + (Number(row.soTien) || 0), 0);
+            const bangName = table.title.split(':')[0] || 'Bảng';
 
-    const invoice = {
-        id: Date.now(),
-        monthYear: `${getCurrentMonthYear()} - ${bangName}`,
-        rows: JSON.parse(JSON.stringify(table.rows)),
-        grandTotal: grandTotal,
-        createdAt: getCurrentDateDDMMYYYY()
-    };
+            const invoice = {
+                id: Date.now(),
+                monthYear: `${getCurrentMonthYear()} - ${bangName}`,
+                rows: JSON.parse(JSON.stringify(table.rows)),
+                grandTotal: grandTotal,
+                createdAt: getCurrentDateDDMMYYYY()
+            };
 
-    db.chotThangInvoices.unshift(invoice);
-    try {
-        await supabaseClient.from('hoa_don_chot_thang').insert({
-            id: invoice.id,
-            month_year: invoice.monthYear,
-            grand_total: invoice.grandTotal,
-            ngay_tao_chuoi: invoice.createdAt
-        });
-        let details = invoice.rows.map(r => ({
-            invoice_id: invoice.id,
-            noi_dung: r.noiDung,
-            so_tien: r.soTien,
-            thoi_gian: r.thoiGian,
-            ghi_chu: r.ghiChu || ''
-        }));
-        await supabaseClient.from('chi_tiet_hoa_don').insert(details);
-    } catch(e) {
-        console.error("Lỗi lưu hóa đơn lên Supabase:", e);
-    }
+            db.chotThangInvoices.unshift(invoice);
+            try {
+                await supabaseClient.from('hoa_don_chot_thang').insert({
+                    id: invoice.id,
+                    month_year: invoice.monthYear,
+                    grand_total: invoice.grandTotal,
+                    ngay_tao_chuoi: invoice.createdAt
+                });
+                let details = invoice.rows.map(r => ({
+                    invoice_id: invoice.id,
+                    noi_dung: r.noiDung,
+                    so_tien: r.soTien,
+                    thoi_gian: r.thoiGian,
+                    ghi_chu: r.ghiChu || ''
+                }));
+                await supabaseClient.from('chi_tiet_hoa_don').insert(details);
+            } catch(e) {
+                console.error("Lỗi lưu hóa đơn lên Supabase:", e);
+            }
 
-    // Đảm bảo lưu lại toàn bộ dữ liệu hiện tại lên Supabase
-    await saveLocalStorage();
-    renderAllTabs();
-    switchTab('tab-chot-thang');
-    showAlert("Thành Công", `Đã lưu lịch sử tháng của ${table.title} và chuyển sang tab Chốt Tháng!`);
-}
+            await saveLocalStorage();
+            renderAllTabs();
+            switchTab('tab-chot-thang');
+            showAlert("Thành Công", `Đã lưu lịch sử tháng của ${table.title} và chuyển sang tab Chốt Tháng!`);
+        }
 
         function renderChotThang() {
             const container = document.getElementById('chotthang-list-container');
@@ -1784,8 +1748,11 @@ async function luuLichSuThang3(tIndex) {
 
                 let rowsHtml = '';
                 inv.rows.forEach(r => {
-                    const isNeg = Number(r.soTien) < 0;
+                    const soTienVal = Number(r.soTien) || 0;
+                    const isNeg = soTienVal < 0;
+                    // Nếu là số âm thì chuyển sang màu đỏ (rose-600), ngược lại màu xanh (emerald-700)
                     const colorClass = isNeg ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold';
+                    
                     rowsHtml += `
                         <div class="flex justify-between items-center py-1.5 border-b border-slate-200/60 text-sm">
                             <div>
@@ -1797,6 +1764,10 @@ async function luuLichSuThang3(tIndex) {
                         </div>
                     `;
                 });
+
+                // Kiểm tra luôn tổng cộng của hóa đơn nếu âm thì hiển thị màu đỏ
+                const isGrandTotalNeg = Number(inv.grandTotal) < 0;
+                const grandTotalColorClass = isGrandTotalNeg ? 'text-rose-600' : 'text-emerald-700';
 
                 wrapper.innerHTML = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-200 pb-3">
@@ -1810,8 +1781,7 @@ async function luuLichSuThang3(tIndex) {
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs text-slate-500 block">Ngày tạo: ${inv.createdAt}</span>
-                            <span class="text-lg font-black text-emerald-700">Tổng: ${formatNumber(inv.grandTotal)} đ</span>
+                            <span class="text-lg font-black ${grandTotalColorClass}">Tổng: ${formatNumber(inv.grandTotal)} đ</span>
                         </div>
                     </div>
                     <div class="space-y-1">
@@ -1822,65 +1792,32 @@ async function luuLichSuThang3(tIndex) {
             });
         }
 
-async function xoaChotThangInvoice(index) {
-    try {
-        const invoiceIdXoa = db.chotThangInvoices[index].id;
-        await supabaseClient.from('hoa_don_chot_thang').delete().eq('id', invoiceIdXoa);
-    } catch(e) {
-        console.error("Lỗi xóa hóa đơn trên Supabase:", e);
-    }
+        async function xoaChotThangInvoice(index) {
+            try {
+                const invoiceIdXoa = db.chotThangInvoices[index].id;
+                await supabaseClient.from('hoa_don_chot_thang').delete().eq('id', invoiceIdXoa);
+            } catch(e) {
+                console.error("Lỗi xóa hóa đơn trên Supabase:", e);
+            }
 
-    db.chotThangInvoices.splice(index, 1);
-    saveLocalStorage();
-    renderChotThang();
-    showAlert("Đã Xóa", "Đã xóa hóa đơn chốt tháng thành công.");
-}
+            db.chotThangInvoices.splice(index, 1);
+            saveLocalStorage();
+            renderChotThang();
+            showAlert("Đã Xóa", "Đã xóa hóa đơn chốt tháng thành công.");
+        }
         
         async function updateChotThangTitle(index, val) {
-    db.chotThangInvoices[index].monthYear = val;
-    
-    // Lưu vào localStorage trước
-    saveLocalStorage();
-
-    // Đồng bộ thay đổi tiêu đề lên Supabase ngay lập tức
-    try {
-        const inv = db.chotThangInvoices[index];
-        await supabaseClient
-            .from('hoa_don_chot_thang')
-            .update({ month_year: val })
-            .eq('id', inv.id);
-        console.log("Đã cập nhật tiêu đề hóa đơn lên Supabase thành công!");
-    } catch (e) {
-        console.error("Lỗi đồng bộ tiêu đề hóa đơn lên Supabase:", e);
-    }
-}
-
-        function xuatExcelTatCa() {
-            const wb = XLSX.utils.book_new();
-
-            const wsRoomsData = db.rooms.map(r => {
-                const calc = calcRoomTotals(r);
-                return {
-                    "Khu": r.khu,
-                    "Phòng": r.name,
-                    "Giá Phòng": r.giaPhong,
-                    "Loại Net": r.netType,
-                    "Loại Rác": r.racType,
-                    "Điện Cũ": r.dienCu,
-                    "Điện Mới": r.dienMoi,
-                    "Tiền Điện": calc.pDien,
-                    "Nước Cũ": r.nuocCu,
-                    "Nước Mới": r.nuocMoi,
-                    "Tiền Nước": calc.pNuoc,
-                    "Tiền Khác": r.tienKhac,
-                    "Tổng Cộng": calc.tongCong,
-                    "Ghi Chú": r.ghiChu || ""
-                };
-            });
-            const wsRooms = XLSX.utils.json_to_sheet(wsRoomsData);
-            XLSX.utils.book_append_sheet(wb, wsRooms, "Danh Sách Phòng");
-
-            XLSX.writeFile(wb, `Quan_Ly_Tro_Export_${getCurrentDateDDMMYYYY().replace(/\//g, '-')}.xlsx`);
+            db.chotThangInvoices[index].monthYear = val;
+            saveLocalStorage();
+            try {
+                const inv = db.chotThangInvoices[index];
+                await supabaseClient
+                    .from('hoa_don_chot_thang')
+                    .update({ month_year: val })
+                    .eq('id', inv.id);
+            } catch (e) {
+                console.error("Lỗi đồng bộ tiêu đề hóa đơn lên Supabase:", e);
+            }
         }
 
         function xuatKhuExcel(khuName) {
@@ -2220,7 +2157,6 @@ async function xoaChotThangInvoice(index) {
                     <div class="pdf-section" style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; margin-bottom: 15px;">
                         <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 8px;">
                             <span style="font-size: 13px; font-weight: bold; color: #0f172a;">${inv.monthYear}</span>
-                            <span style="font-size: 12px; color: #64748b;">Ngày tạo: ${inv.createdAt}</span>
                         </div>
                         <table>
                             <thead>
@@ -2301,8 +2237,7 @@ async function xoaChotThangInvoice(index) {
             }
         });
 
-      window.onload = function() {
-            // Kiểm tra nếu trong phiên làm việc đã xác thực thì giữ nguyên trạng thái mở khóa khi F5
+        window.onload = function() {
             if (sessionStorage.getItem('app_authenticated') === 'true') {
                 const overlay = document.getElementById('auth-overlay');
                 if (overlay) overlay.classList.add('hidden');
@@ -2311,7 +2246,7 @@ async function xoaChotThangInvoice(index) {
         };
     </script>
 
-<!-- Modal Đổi Mật Khẩu -->
+    <!-- Modal Đổi Mật Khẩu -->
     <div id="change-password-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
