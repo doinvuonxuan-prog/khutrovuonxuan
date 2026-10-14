@@ -116,7 +116,6 @@
             </div>
             <div class="space-y-3">
                 <input type="password" id="app-password-input" placeholder="Nhập mật khẩu..." 
-                    onkeyup="if(event.key === 'Enter') checkAppPassword()"
                     class="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 <p id="auth-error-msg" class="text-xs text-rose-500 font-semibold hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Mật khẩu không chính xác!</p>
                 <button onclick="checkAppPassword()" class="w-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-green-600 hover:from-emerald-500 hover:to-green-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg shadow-emerald-500/30">
