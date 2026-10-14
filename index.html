@@ -2242,6 +2242,11 @@ function updateCocKhuSelectOptions() {
             if (e.key === 'Enter') {
                 const target = e.target;
                 if (!target) return;
+				if (target.id === 'app-password-input') {
+            		e.preventDefault();
+            		checkAppPassword();
+            		return;
+        		}
 
                 const addModal = document.getElementById('add-room-modal');
                 if (addModal && !addModal.classList.contains('hidden')) {
