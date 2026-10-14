@@ -107,8 +107,8 @@
 <!-- MÀN HÌNH NHẬP MẬT KHẨU BẢO MẬT -->
     <div id="auth-overlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl space-y-6 text-center border border-slate-100">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
-                <i class="fa-solid fa-lock"></i>
+            <div class="w-16 h-16 bg-gradient-to-br from-emerald-300 via-emerald-400 to-green-500 text-white rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-lg shadow-emerald-400/30">
+                <i class="fa-user-lock"></i>
             </div>
             <div>
                 <h3 class="text-xl font-bold text-slate-800">Xác Nhận Truy Cập</h3>
@@ -119,7 +119,7 @@
                     onkeyup="if(event.key === 'Enter') checkAppPassword()"
                     class="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 <p id="auth-error-msg" class="text-xs text-rose-500 font-semibold hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Mật khẩu không chính xác!</p>
-                <button onclick="checkAppPassword()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg shadow-emerald-600/30">
+                <button onclick="checkAppPassword()" class="w-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-green-600 hover:from-emerald-500 hover:to-green-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-lg shadow-emerald-500/30">
                     Đăng Nhập
                 </button>
             </div>
@@ -128,7 +128,7 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
             <div class="flex items-center gap-3">
-                <div class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-md">
+                <div class="w-12 h-12 bg-gradient-to-br from-emerald-300 via-emerald-400 to-green-500 text-white rounded-2xl shadow-md shadow-emerald-300/50 flex items-center justify-center text-xl">
                     <i class="fa-solid fa-house-chimney text-lg"></i>
                 </div>
                 <div>
