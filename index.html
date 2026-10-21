@@ -605,9 +605,9 @@
             },
             rooms: [],
             thanhToanTables: [
-                { title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-        	{ title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-        	{ title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
+                { shortTitle: 'CÔ4', title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+        	{ shortTitle: 'BÁC5, CHA', title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+        	{ shortTitle: 'NHÀ', title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
             ],
             chotThangInvoices: []
         };
@@ -669,11 +669,13 @@
 
                 const { data: resThanhToan } = await supabaseClient.from('bang_thanh_toan').select('*').order('id', { ascending: true });
 
+                // Giữ nguyên các tiêu đề rút gọn (shortTitle) và tiêu đề dài (title) đã cấu hình
                 db.thanhToanTables = [
-                    { title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-                    { title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
-                    { title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
+                    { shortTitle: db.thanhToanTables[0]?.shortTitle || 'CÔ4', title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+                    { shortTitle: db.thanhToanTables[1]?.shortTitle || 'BÁC5, CHA', title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
+                    { shortTitle: db.thanhToanTables[2]?.shortTitle || 'NHÀ', title: 'Bảng A: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] }
                 ];
+                
                 if (resThanhToan) {
                     resThanhToan.forEach(row => {
                         const idx = row.table_index;
@@ -1513,7 +1515,7 @@
                         : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
                 }`;
                 
-                const shortTitle = table.title.split(':')[0] || `Bảng ${idx + 1}`;
+                const shortTitle = table.shortTitle || table.title.split(':')[0] || `Bảng ${idx + 1}`;
                 btn.innerHTML = `
                     <i class="fa-solid fa-file-invoice"></i>
                     <span>${shortTitle}</span>
