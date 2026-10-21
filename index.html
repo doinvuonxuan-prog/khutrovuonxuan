@@ -667,7 +667,8 @@
                     }));
                 }
 
-                const { data: resThanhToan } = await supabaseClient.from('bang_thanh_toan').select('*');
+                const { data: resThanhToan } = await supabaseClient.from('bang_thanh_toan').select('*').order('id', { ascending: true });
+
                 db.thanhToanTables = [
                     { title: 'Bảng B: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
                     { title: 'Bảng CD: Thanh Toán & Bàn Giao Cuối Tháng', rows: [] },
@@ -688,7 +689,7 @@
                     });
                 }
 
-                const { data: resInvoices } = await supabaseClient.from('hoa_don_chot_thang').select('*, chi_tiet_hoa_don(*)').order('id', { ascending: false });
+                const { data: resInvoices } = await 	supabaseClient.from('hoa_don_chot_thang').select('*, 	chi_tiet_hoa_don(*)').order('id', { ascending: false });
                 if (resInvoices) {
                     db.chotThangInvoices = resInvoices.map(inv => ({
                         id: inv.id,
@@ -712,7 +713,7 @@
             renderAllTabs();
         }
 
-        async function saveLocalStorage() {
+                async function saveLocalStorage() {
             sortRoomsAlphabetically();
             try {
                 const gp = db.globalPrices;
@@ -728,7 +729,7 @@
                     gia_nuoc: gp.nuoc
                 });
 
-                if (db.rooms.length >= 0) {
+                if (db.rooms.length > 0) {
                     const dataRooms = db.rooms.map(r => ({
                         id: r.id,
                         khu: r.khu,
@@ -753,27 +754,13 @@
                     }));
                     await supabaseClient.from('phong_trans_tro').upsert(dataRooms);
                 }
-
-                await supabaseClient.from('bang_thanh_toan').delete().neq('id', 0);
-                let dataThanhToanRows = [];
-                db.thanhToanTables.forEach((table, tIndex) => {
-                    table.rows.forEach(row => {
-                        dataThanhToanRows.push({
-                            table_index: tIndex,
-                            noi_dung: row.noiDung,
-                            so_tien: row.soTien, 
-                            thoi_gian: row.thoiGian,
-                            ghi_chu: row.ghiChu || ''
-                        });
-                    });
-                });
-                if (dataThanhToanRows.length > 0) {
-                    await supabaseClient.from('bang_thanh_toan').insert(dataThanhToanRows);
-                }
+                // ĐÃ BỎ phần delete/insert bang_thanh_toan tại đây để tránh nhân đôi dữ liệu
             } catch (err) {
                 console.error("Lỗi tự động sao lưu lên Supabase:", err);
             }
         }
+
+                   
 
         function formatNumber(num) {
             if (isNaN(num) || num === null || num === undefined) return "0";
@@ -1491,207 +1478,316 @@
             }
         }
 
-        function renderThanhToan() {
-            const scrollContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
-            const savedScrollPositions = Array.from(scrollContainers).map(el => el.scrollTop);
+        // Biến lưu vị trí bảng thanh toán đang chọn (Mặc định 0 là Bảng B)
+        let currentThanhToanSubTab = 0;
+        let dangXuLyThanhToan = false;
 
-            const wrapper = document.getElementById('thanh-toan-tables-wrapper');
-            wrapper.innerHTML = '';
-
-            db.thanhToanTables.forEach((table, tIndex) => {
-                let grandTotal = table.rows.reduce((sum, r) => sum + (Number(r.soTien) || 0), 0);
-                const isGrandTotalNegative = grandTotal < 0;
-                const grandTotalColorClass = isGrandTotalNegative ? 'text-rose-600' : 'text-emerald-700';
-
-                const card = document.createElement('div');
-                card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6";
-
-                let rowsHtml = '';
-                table.rows.forEach((row, index) => {
-                    const soTien = Number(row.soTien) || 0;
-                    const isNegative = soTien < 0;
-                    const soTienColorClass = isNegative ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold';
-
-                    rowsHtml += `
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="p-3">
-                               <div class="flex items-center gap-1.5">
-                                  <input type="text" value="${row.noiDung}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
-                                  <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
-                                     <option value="">Chọn mục </option>
-                                        <optgroup label="--- TỔNG KHU ---">
-                                            <option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>
-                                            <option value="B">Tổng Khu B (${formatNumber(getKhuTotal('B'))})</option>
-                                            <option value="C">Tổng Khu C (${formatNumber(getKhuTotal('C'))})</option>
-                                            <option value="D">Tổng Khu D (${formatNumber(getKhuTotal('D'))})</option>
-                                        </optgroup>
-                                        <optgroup label="--- TIỀN TRỌ CÒN THIẾU KHU ---">
-                                            <option value="THIEU_A">Tiền trọ còn thiếu khu A (-${formatNumber(getKhuTotalThieu('A'))})</option>
-                                            <option value="THIEU_B">Tiền trọ còn thiếu khu B (-${formatNumber(getKhuTotalThieu('B'))})</option>
-                                            <option value="THIEU_C">Tiền trọ còn thiếu khu C (-${formatNumber(getKhuTotalThieu('C'))})</option>
-                                            <option value="THIEU_D">Tiền trọ còn thiếu khu D (-${formatNumber(getKhuTotalThieu('D'))})</option>
-                                        </optgroup>
-                                        <optgroup label="--- TỔNG RÁC KHU ---">
-                                            <option value="RAC_A">Tổng Rác Khu A (${formatNumber(getKhuTotalRac('A'))})</option>
-                                            <option value="RAC_B">Tổng Rác Khu B (${formatNumber(getKhuTotalRac('B'))})</option>
-                                            <option value="RAC_C">Tổng Rác Khu C (${formatNumber(getKhuTotalRac('C'))})</option>
-                                            <option value="RAC_D">Tổng Rác Khu D (${formatNumber(getKhuTotalRac('D'))})</option>
-                                        </optgroup>
-                                        <optgroup label="--- TỔNG CỌC KHU ---">
-						<option value="COC_NHAN_A">Tổng cọc đã nhận Khu A (${formatNumber(getKhuTotalCocNhan('A'))})</option>
-    						<option value="COC_NHAN_B">Tổng cọc đã nhận Khu B (${formatNumber(getKhuTotalCocNhan('B'))})</option>
-   						<option value="COC_NHAN_C">Tổng cọc đã nhận Khu C (${formatNumber(getKhuTotalCocNhan('C'))})</option>
-    						<option value="COC_NHAN_D">Tổng cọc đã nhận Khu D (${formatNumber(getKhuTotalCocNhan('D'))})</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td class="p-3">
-                                <input type="text" value="${formatNumber(row.soTien)}" 
-                                    onfocus="this.value = (db.thanhToanTables[${tIndex}].rows[${index}].soTien === 0) ? '' : db.thanhToanTables[${tIndex}].rows[${index}].soTien; this.select();" 
-                                    onblur="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
-                                    onchange="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
-                                    onkeyup="if(event.key === 'Enter') this.blur();"
-                                    placeholder="0" class="w-42 px-3 py-1.5 border rounded bg-white text-xs text-right ${soTienColorClass}">
-                            </td>
-                            <td class="p-3">
-                                <input type="text" value="${row.thoiGian}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'thoiGian', this.value)" placeholder="dd/mm/yyyy" class="w-32 px-3 py-1.5 border rounded bg-white text-xs">
-                            </td>
-                            <td class="p-3">
-                                <input type="text" value="${row.ghiChu || ''}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'ghiChu', this.value)" placeholder="Ghi chú..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
-                            </td>
-                            <td class="p-3 text-center">
-                                <button onclick="xoaHangThanhToan3(${tIndex}, ${index})" class="text-rose-400 hover:text-rose-600 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                card.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-emerald-50 p-4 rounded-xl border border-emerald-200">
-                        <div>
-                            <h2 class="text-lg font-bold text-emerald-900 flex items-center gap-2">
-                                <i class="fa-solid fa-file-invoice-dollar"></i> ${table.title}
-                            </h2>
-                            <p class="text-xs text-emerald-700">Điền các khoản thu/chi, chọn nhanh tổng khu A, B, C, D hoặc tổng tiền rác từng khu, tính toán tự động</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Tổng Số Tiền Bàn Giao</span>
-                            <span class="text-2xl font-black ${grandTotalColorClass}">${formatNumber(grandTotal)} đ</span>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto max-h-[400px] overflow-y-auto rounded-xl border border-slate-200">
-                        <table class="w-full border-collapse text-sm">
-                            <thead class="sticky top-0 z-10 bg-slate-100 shadow-xs">
-                                <tr class="text-slate-700 font-semibold border-b border-slate-200">
-                                    <th class="p-3 w-1/3 text-left">Nội Dung (Nhập Nội Dung Hoặc Chọn Mục)</th>
-                                    <th class="p-3 text-right">Số tiền (đồng)</th>
-                                    <th class="p-3 w-1/6">Thời Gian (dd/mm/yyyy)</th>
-                                    <th class="p-3">Ghi Chú</th>
-                                    <th class="p-3 text-center w-12">Xóa</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                ${rowsHtml || '<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Chưa có dòng dữ liệu nào</td></tr>'}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="flex flex-wrap justify-between items-center gap-3">
-                        <button onclick="themHangThanhToan3(${tIndex})" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2.5 rounded-lg text-sm transition flex items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-plus"></i> Thêm Hàng Mới (+)
-                        </button>
-                        <div class="flex items-center gap-3">
-                            <button onclick="xoaTatCaThanhToan3(${tIndex})" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium px-4 py-2.5 rounded-lg text-sm transition border border-rose-200 flex items-center gap-2">
-                                <i class="fa-solid fa-trash-can"></i> Xóa Bảng Này
-                            </button>
-                            <button onclick="luuLichSuThang3(${tIndex})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg text-sm transition shadow-md flex items-center gap-2">
-                                <i class="fa-solid fa-floppy-disk"></i> Lưu Lịch Sử Bảng Này
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                wrapper.appendChild(card);
-            });
-
-            setTimeout(() => {
-                const newContainers = document.querySelectorAll('#thanh-toan-tables-wrapper .overflow-y-auto');
-                newContainers.forEach((el, idx) => {
-                    if (savedScrollPositions[idx] !== undefined) {
-                        el.scrollTop = savedScrollPositions[idx];
-                    }
-                });
-            }, 0);
+        function switchThanhToanSubTab(index) {
+            currentThanhToanSubTab = index;
+            renderThanhToan();
         }
 
-        function chonTongKhuThanhToan3(tIndex, index, selectedValue) {
-            if (!selectedValue) return;
+        function renderThanhToan() {
+            const wrapper = document.getElementById('thanh-toan-tables-wrapper');
+            if (!wrapper) return;
 
+            // Lưu vị trí cuộn TRƯỚC khi vẽ lại bảng
+                     const savedWindowScrollY = window.scrollY;
+
+
+            wrapper.innerHTML = '';
+
+            // 1. Tạo thanh Menu Tab phụ dạng 3 thẻ nhỏ nằm ngang
+            const subTabNav = document.createElement('div');
+            subTabNav.className = "flex overflow-x-auto gap-2 border-b border-slate-200 pb-3 mb-4";
+            
+            db.thanhToanTables.forEach((table, idx) => {
+                const grandTotal = table.rows.reduce((sum, r) => sum + (Number(r.soTien) || 0), 0);
+                const isActive = idx === currentThanhToanSubTab;
+                
+                const btn = document.createElement('button');
+                btn.onclick = () => switchThanhToanSubTab(idx);
+                btn.className = `px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 whitespace-nowrap ${
+                    isActive 
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' 
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                }`;
+                
+                const shortTitle = table.title.split(':')[0] || `Bảng ${idx + 1}`;
+                btn.innerHTML = `
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>${shortTitle}</span>
+                    <span class="ml-1 px-2 py-0.5 rounded-full text-[10px] ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'}">
+                        ${formatNumber(grandTotal)}đ
+                    </span>
+                `;
+                subTabNav.appendChild(btn);
+            });
+            wrapper.appendChild(subTabNav);
+
+            // 2. Chỉ render nội dung của 1 Bảng đang được chọn
+            const tIndex = currentThanhToanSubTab;
             const table = db.thanhToanTables[tIndex];
+            if (!table) return;
+
+            let grandTotal = table.rows.reduce((sum, r) => sum + (Number(r.soTien) || 0), 0);
+            const isGrandTotalNegative = grandTotal < 0;
+            const grandTotalColorClass = isGrandTotalNegative ? 'text-rose-600' : 'text-emerald-700';
+
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6";
+
+            let rowsHtml = '';
+            table.rows.forEach((row, index) => {
+                const soTien = Number(row.soTien) || 0;
+                const isNegative = soTien < 0;
+                const soTienColorClass = isNegative ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold';
+
+                rowsHtml += `
+                    <tr class="hover:bg-slate-50 transition">
+			<td class="p-3 text-center font-bold text-slate-500 text-xs">${index + 1}</td>
+                        <td class="p-3">
+                           <div class="flex items-center gap-1.5">
+                              <input type="text" value="${row.noiDung || ''}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
+                              <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
+                                 <option value="">Chọn mục </option>
+                                    <optgroup label="--- TỔNG KHU ---">                                        <option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>                                        <option value="B">Tổng Khu B (${formatNumber(getKhuTotal('B'))})</option>                                        <option value="C">Tổng Khu C (${formatNumber(getKhuTotal('C'))})</option>                                        <option value="D">Tổng Khu D (${formatNumber(getKhuTotal('D'))})</option>
+                                    </optgroup>
+                                    <optgroup label="--- TIỀN TRỌ CÒN THIẾU KHU ---">                                        <option value="THIEU_A">Tiền trọ còn thiếu khu A (-${formatNumber(getKhuTotalThieu('A'))})</option>                                        <option value="THIEU_B">Tiền trọ còn thiếu khu B (-${formatNumber(getKhuTotalThieu('B'))})</option>                                        <option value="THIEU_C">Tiền trọ còn thiếu khu C (-${formatNumber(getKhuTotalThieu('C'))})</option>                                        <option value="THIEU_D">Tiền trọ còn thiếu khu D (-${formatNumber(getKhuTotalThieu('D'))})</option>
+                                    </optgroup>
+                                    <optgroup label="--- TỔNG RÁC KHU ---">                                        <option value="RAC_A">Tổng Rác Khu A (${formatNumber(getKhuTotalRac('A'))})</option>                                        <option value="RAC_B">Tổng Rác Khu B (${formatNumber(getKhuTotalRac('B'))})</option>                                        <option value="RAC_C">Tổng Rác Khu C (${formatNumber(getKhuTotalRac('C'))})</option>                                        <option value="RAC_D">Tổng Rác Khu D (${formatNumber(getKhuTotalRac('D'))})</option>
+                                    </optgroup>
+                                    <optgroup label="--- TỔNG CỌC KHU ---">                                        <option value="COC_NHAN_A">Tổng cọc đã nhận Khu A (${formatNumber(getKhuTotalCocNhan('A'))})</option>                                        <option value="COC_NHAN_B">Tổng cọc đã nhận Khu B (${formatNumber(getKhuTotalCocNhan('B'))})</option>                                        <option value="COC_NHAN_C">Tổng cọc đã nhận Khu C (${formatNumber(getKhuTotalCocNhan('C'))})</option>                                        <option value="COC_NHAN_D">Tổng cọc đã nhận Khu D (${formatNumber(getKhuTotalCocNhan('D'))})</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </td>
+                        <td class="p-3">
+                            <input type="text" value="${formatNumber(row.soTien)}" 
+                                onfocus="this.value = (db.thanhToanTables[${tIndex}].rows[${index}].soTien === 0) ? '' : db.thanhToanTables[${tIndex}].rows[${index}].soTien; this.select();" 
+                                onblur="this.value = formatNumber(db.thanhToanTables[${tIndex}].rows[${index}].soTien);"
+                                onchange="updateThanhToanRow3(${tIndex}, ${index}, 'soTien', this.value)" 
+                                onkeyup="if(event.key === 'Enter') this.blur();"
+                                placeholder="0" class="w-42 px-3 py-1.5 border rounded bg-white text-xs text-right ${soTienColorClass}">
+                        </td>
+                        <td class="p-3">
+                            <input type="text" value="${row.thoiGian || ''}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'thoiGian', this.value)" placeholder="dd/mm/yyyy" class="w-32 px-3 py-1.5 border rounded bg-white text-xs">
+                        </td>
+                        <td class="p-3">
+                            <input type="text" value="${row.ghiChu || ''}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'ghiChu', this.value)" placeholder="Ghi chú..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="xoaHangThanhToan3(${tIndex}, ${index})" class="text-rose-400 hover:text-rose-600 text-xs px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+                    <div>
+                        <h2 class="text-lg font-bold text-emerald-900 flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> ${table.title}
+                        </h2>
+                        <p class="text-xs text-emerald-700">Điền các khoản thu/chi, chọn nhanh tổng khu A, B, C, D hoặc tổng tiền rác từng khu, tính toán tự động</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Tổng Số Tiền Bàn Giao</span>
+                        <span class="text-2xl font-black ${grandTotalColorClass}">${formatNumber(grandTotal)} đ</span>
+                    </div>
+                </div>
+
+                                    <div class="rounded-xl border border-slate-200">
+                    <table class="w-full table-fixed border-collapse text-sm">
+                        <thead>
+                            <tr class="text-slate-700 font-semibold border-b border-slate-200">
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-12 text-center shadow-xs">STT</th>
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-[38%] text-left shadow-xs">Nội Dung (Nhập Nội Dung Hoặc Chọn Mục)</th>
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-[16%] text-right shadow-xs">Số tiền (đồng)</th>
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-[14%] text-center shadow-xs">Thời Gian (dd/mm/yyyy)</th>
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-[24%] text-left shadow-xs">Ghi Chú</th>
+                                <th class="sticky top-[118px] z-20 bg-slate-100 p-3 w-14 text-center shadow-xs">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            ${rowsHtml || '<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Chưa có dòng dữ liệu nào</td></tr>'}
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <button onclick="themHangThanhToan3(${tIndex}, event)" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2.5 rounded-lg text-sm transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> Thêm Hàng Mới (+)
+                    </button>
+                    <div class="flex items-center gap-3">
+                        <button onclick="xoaTatCaThanhToan3(${tIndex})" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium px-4 py-2.5 rounded-lg text-sm transition border border-rose-200 flex items-center gap-2">
+                            <i class="fa-solid fa-trash-can"></i> Xóa Bảng Này
+                        </button>
+                        <button onclick="luuLichSuThang3(${tIndex})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-5 py-2.5 rounded-lg text-sm transition shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu Lịch Sử Bảng Này
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            wrapper.appendChild(card);
+
+            // Khôi phục vị trí cuộn SAU khi vẽ lại bảng
+                     window.scrollTo({ top: savedWindowScrollY, behavior: 'instant' });
+
+        }
+
+        async function chonTongKhuThanhToan3(tIndex, index, selectedValue) {
+            if (!selectedValue) return;
+            const row = db.thanhToanTables[tIndex]?.rows[index];
+            if (!row || !row.id) return;
+
+            let noiDungMoi = '';
+            let soTienMoi = 0;
 
             if (selectedValue.startsWith('RAC_')) {
                 const khuName = selectedValue.replace('RAC_', '');
-                const totalRac = getKhuTotalRac(khuName);
-                table.rows[index].noiDung = `Tổng Tiền Rác Khu ${khuName}`;
-                table.rows[index].soTien = totalRac;
+                noiDungMoi = `Tổng Tiền Rác Khu ${khuName}`;
+                soTienMoi = getKhuTotalRac(khuName);
             } else if (selectedValue.startsWith('THIEU_')) {
                 const khuName = selectedValue.replace('THIEU_', '');
-                const totalThieu = getKhuTotalThieu(khuName);
-                table.rows[index].noiDung = `tiền trọ còn thiếu khu ${khuName}`;
-                table.rows[index].soTien = -Math.abs(totalThieu);
-	    } else if (selectedValue.startsWith('COC_NHAN_')) {
-        	const khuName = selectedValue.replace('COC_NHAN_', '');
-        	const totalCoc = getKhuTotalCocNhan(khuName);
-        	table.rows[index].noiDung = `Tổng Cọc Đã Nhận Khu ${khuName}`;
-        	table.rows[index].soTien = totalCoc;
+                noiDungMoi = `tiền trọ còn thiếu khu ${khuName}`;
+                soTienMoi = -Math.abs(getKhuTotalThieu(khuName));
+            } else if (selectedValue.startsWith('COC_NHAN_')) {
+                const khuName = selectedValue.replace('COC_NHAN_', '');
+                noiDungMoi = `Tổng Cọc Đã Nhận Khu ${khuName}`;
+                soTienMoi = getKhuTotalCocNhan(khuName);
             } else {
                 const khuName = selectedValue;
-                const totalKhu = getKhuTotal(khuName);
-                table.rows[index].noiDung = `Tổng Tiền Khu ${khuName}`;
-                table.rows[index].soTien = totalKhu;
+                noiDungMoi = `Tổng Tiền Khu ${khuName}`;
+                soTienMoi = getKhuTotal(khuName);
             }
 
-            saveLocalStorage();
-            renderThanhToan();
+            try {
+                const { error } = await supabaseClient
+                    .from('bang_thanh_toan')
+                    .update({ noi_dung: noiDungMoi, so_tien: soTienMoi })
+                    .eq('id', row.id);
+                if (error) throw error;
+
+                row.noiDung = noiDungMoi;
+                row.soTien = soTienMoi;
+                renderThanhToan();
+            } catch (err) {
+                console.error("Lỗi cập nhật chọn mục:", err);
+                showAlert("Lỗi", "Không thể lưu mục đã chọn lên Supabase!", false);
+            }
         }
 
-        function themHangThanhToan3(tIndex, event) {
+        async function themHangThanhToan3(tIndex, event) {
             if (event) event.preventDefault();
-            db.thanhToanTables[tIndex].rows.push({
-                id: Date.now(),
-                noiDung: '',
-                soTien: 0,
-                thoiGian: getCurrentDateDDMMYYYY(),
-                ghiChu: ''
-            });
-            saveLocalStorage();
-            renderThanhToan();
-        }
+            if (dangXuLyThanhToan) return;
+            dangXuLyThanhToan = true;
 
-        function updateThanhToanRow3(tIndex, index, field, val) {
-            const table = db.thanhToanTables[tIndex];
-            if (field === 'soTien') {
-                table.rows[index][field] = parseNumber(val);
-            } else {
-                table.rows[index][field] = val;
+            try {
+                const newRowData = {
+                    table_index: tIndex,
+                    noi_dung: '',
+                    so_tien: 0,
+                    thoi_gian: getCurrentDateDDMMYYYY(),
+                    ghi_chu: ''
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('bang_thanh_toan')
+                    .insert(newRowData)
+                    .select('*')
+                    .single();
+
+                if (error) throw error;
+
+                db.thanhToanTables[tIndex].rows.push({
+                    id: data.id,
+                    noiDung: data.noi_dung,
+                    soTien: data.so_tien,
+                    thoiGian: data.thoi_gian,
+                    ghiChu: data.ghi_chu || ''
+                });
+                renderThanhToan();
+            } catch (err) {
+                console.error("Lỗi thêm dòng thanh toán:", err);
+                showAlert("Lỗi", "Không thể thêm hàng mới lên Supabase!", false);
+            } finally {
+                dangXuLyThanhToan = false;
             }
-            saveLocalStorage();
-            renderThanhToan();
         }
 
-        function xoaHangThanhToan3(tIndex, index) {
-            db.thanhToanTables[tIndex].rows.splice(index, 1);
-            saveLocalStorage();
-            renderThanhToan();
+        async function updateThanhToanRow3(tIndex, index, field, val) {
+            const row = db.thanhToanTables[tIndex]?.rows[index];
+            if (!row || !row.id) return;
+
+            const columnMap = {
+                noiDung: 'noi_dung',
+                soTien: 'so_tien',
+                thoiGian: 'thoi_gian',
+                ghiChu: 'ghi_chu'
+            };
+            const colName = columnMap[field];
+            if (!colName) return;
+
+            const newVal = field === 'soTien' ? parseNumber(val) : val;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('bang_thanh_toan')
+                    .update({ [colName]: newVal })
+                    .eq('id', row.id);
+
+                if (error) throw error;
+
+                row[field] = newVal;
+                renderThanhToan();
+            } catch (err) {
+                console.error("Lỗi cập nhật dòng thanh toán:", err);
+                showAlert("Lỗi", "Không thể lưu thay đổi lên Supabase!", false);
+            }
         }
 
-        function xoaTatCaThanhToan3(tIndex) {
-            db.thanhToanTables[tIndex].rows = [];
-            saveLocalStorage();
-            renderThanhToan();
-            showAlert("Đã Xóa", `Bảng ${tIndex + 1} đã được làm trống.`);
+        async function xoaHangThanhToan3(tIndex, index) {
+            const row = db.thanhToanTables[tIndex]?.rows[index];
+            if (!row) return;
+
+            try {
+                if (row.id) {
+                    const { error } = await supabaseClient
+                        .from('bang_thanh_toan')
+                        .delete()
+                        .eq('id', row.id);
+                    if (error) throw error;
+                }
+                db.thanhToanTables[tIndex].rows.splice(index, 1);
+                renderThanhToan();
+            } catch (err) {
+                console.error("Lỗi xóa dòng thanh toán:", err);
+                showAlert("Lỗi", "Không thể xóa dòng này trên Supabase!", false);
+            }
         }
+
+        async function xoaTatCaThanhToan3(tIndex) {
+            if (!confirm(`Bạn có chắc chắn muốn xóa toàn bộ dữ liệu của Bảng này không?`)) return;
+            try {
+                const { error } = await supabaseClient
+                    .from('bang_thanh_toan')
+                    .delete()
+                    .eq('table_index', tIndex);
+                if (error) throw error;
+
+                db.thanhToanTables[tIndex].rows = [];
+                renderThanhToan();
+                showAlert("Đã Xóa", `Bảng ${tIndex + 1} đã được làm trống.`);
+            } catch (err) {
+                console.error("Lỗi xóa bảng thanh toán:", err);
+                showAlert("Lỗi", "Không thể xóa bảng trên Supabase!", false);
+            }
+        }
+
 
         async function luuLichSuThang3(tIndex) {
             const table = db.thanhToanTables[tIndex];
