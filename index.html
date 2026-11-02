@@ -223,15 +223,17 @@
                     </div>
                 </div>
             </div>
-	<!-- BẢNG THỐNG KÊ 3 KHU (XẾP 3 THẺ NẰM NGANG - CHỮ CỰC KỲ TO RÕ) -->
+<!-- BẢNG THỐNG KÊ 3 KHU (XẾP 3 THẺ NẰM NGANG - CHỮ CỰC KỲ TO RÕ) -->
 <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5">
 
     <!-- THẺ KHU A -->
+
     <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
         <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
-            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU A
-            </h3>
+            <h3 class="font-black text-slate-900 text-sm md:text-base flex items-center justify-between gap-1 whitespace-nowrap">
+		<span class="flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU A</span> 
+    		<span id="label-thang-a">Tháng.../20...</span>
+	    </h3>
         </div>
         <div class="space-y-3.5 text-base">
             <div class="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-100">
@@ -279,10 +281,12 @@
     </div>
 
     <!-- THẺ KHU B -->
-    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+	
+	<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
         <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
-            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU B
+            <h3 class="font-black text-slate-900 text-sm md:text-base flex items-center justify-between gap-1 whitespace-nowrap">
+    		<span class="flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU B</span> 
+		<span id="label-thang-b">Tháng.../20...</span>
             </h3>
         </div>
         <div class="space-y-3.5 text-base">
@@ -331,12 +335,14 @@
     </div>
 
     <!-- THẺ KHU CD (TỔNG HỢP C & D) -->
+
     <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
         <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
-            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU CD
-            </h3>
-        </div>
+            <h3 class="font-black text-slate-900 text-sm md:text-base flex items-center justify-between gap-1 whitespace-nowrap">
+    		<span class="flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU CD</span> 
+    		<span id="label-thang-cd">Tháng.../20...</span>
+	    </h3>
+	  </div>
         <div class="space-y-3.5 text-base">
             <div class="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-100">
                 <div class="font-bold text-slate-800 flex items-center gap-2">
@@ -1222,6 +1228,7 @@
             renderThanhToan();
             renderChotThang();
 	    updateGeneralStatsCards();
+	    updatePreviousMonthLabel();
 
         }
 	
@@ -1277,6 +1284,26 @@
     applyStatsToDOM('b', statsB);
     applyStatsToDOM('cd', statsCD);
 }
+
+	function updatePreviousMonthLabel() {
+    const now = new Date();
+    // Lùi lại 1 tháng
+    now.setMonth(now.getMonth() - 1);
+    
+    const m = now.getMonth() + 1; // Tháng (1 - 12)
+    const y = now.getFullYear();  // Năm
+    
+    const textThang = `Tháng ${m}/${y}`;
+    
+    // Gán vào 3 thẻ thống kê
+    const elA = document.getElementById('label-thang-a');
+    const elB = document.getElementById('label-thang-b');
+    const elCD = document.getElementById('label-thang-cd');
+    
+    if (elA) elA.innerText = textThang;
+    if (elB) elB.innerText = textThang;
+    if (elCD) elCD.innerText = textThang;
+}	
 
         function updateRoomProp(id, prop, val) {
             const room = db.rooms.find(r => r.id === id);
