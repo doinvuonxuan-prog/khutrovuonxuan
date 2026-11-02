@@ -223,7 +223,168 @@
                     </div>
                 </div>
             </div>
+	<!-- BẢNG THỐNG KÊ 3 KHU (XẾP 3 THẺ NẰM NGANG - CHỮ CỰC KỲ TO RÕ) -->
+<div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-5">
+
+    <!-- THẺ KHU A -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU A
+            </h3>
         </div>
+        <div class="space-y-3.5 text-base">
+            <div class="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-100">
+                <div class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-house text-emerald-600"></i> Quy mô phòng:
+                </div>
+                <div class="pl-6 space-y-1 text-slate-800 font-semibold text-base">
+                    <div>• Tổng: <strong id="card-a-total-rooms" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• &lt; 3 người: <strong id="card-a-u3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• ≥ 3 người: <strong id="card-a-o3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-money-bill text-emerald-600"></i> Tổng phòng:</span>
+                <span class="font-black text-emerald-700 text-lg" id="card-a-phong">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-trash-can text-emerald-600"></i> Tổng rác:</span>
+                <span class="font-black text-slate-900 text-base" id="card-a-rac">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-globe text-emerald-600"></i> Tổng net:</span>
+                <span class="font-black text-slate-900 text-base" id="card-a-net">0 đ</span>
+            </div>
+
+            <div class="py-2.5 border-b border-slate-100 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> Tổng điện (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-a-dien-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-a-dien-kwh">(0 kWh)</div>
+            </div>
+
+            <div class="py-2.5 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-droplet text-sky-500"></i> Tổng nước (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-a-nuoc-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-a-nuoc-m3">(0 m³)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THẺ KHU B -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU B
+            </h3>
+        </div>
+        <div class="space-y-3.5 text-base">
+            <div class="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-100">
+                <div class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-house text-emerald-600"></i> Quy mô phòng:
+                </div>
+                <div class="pl-6 space-y-1 text-slate-800 font-semibold text-base">
+                    <div>• Tổng: <strong id="card-b-total-rooms" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• &lt; 3 người: <strong id="card-b-u3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• ≥ 3 người: <strong id="card-b-o3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-money-bill text-emerald-600"></i> Tổng phòng:</span>
+                <span class="font-black text-emerald-700 text-lg" id="card-b-phong">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-trash-can text-emerald-600"></i> Tổng rác:</span>
+                <span class="font-black text-slate-900 text-base" id="card-b-rac">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-globe text-emerald-600"></i> Tổng net:</span>
+                <span class="font-black text-slate-900 text-base" id="card-b-net">0 đ</span>
+            </div>
+
+            <div class="py-2.5 border-b border-slate-100 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> Tổng điện (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-b-dien-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-b-dien-kwh">(0 kWh)</div>
+            </div>
+
+            <div class="py-2.5 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-droplet text-sky-500"></i> Tổng nước (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-b-nuoc-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-b-nuoc-m3">(0 m³)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THẺ KHU CD (TỔNG HỢP C & D) -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+        <div class="border-b border-slate-100 pb-3 flex justify-between items-center">
+            <h3 class="font-black text-slate-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-emerald-600"></i> THỐNG KÊ KHU CD
+            </h3>
+        </div>
+        <div class="space-y-3.5 text-base">
+            <div class="bg-slate-50 p-4 rounded-xl space-y-2 border border-slate-100">
+                <div class="font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-house text-emerald-600"></i> Quy mô phòng:
+                </div>
+                <div class="pl-6 space-y-1 text-slate-800 font-semibold text-base">
+                    <div>• Tổng: <strong id="card-cd-total-rooms" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• &lt; 3 người: <strong id="card-cd-u3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                    <div>• ≥ 3 người: <strong id="card-cd-o3" class="text-slate-900 font-black text-lg">0</strong> phòng</div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-money-bill text-emerald-600"></i> Tổng phòng:</span>
+                <span class="font-black text-emerald-700 text-lg" id="card-cd-phong">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-trash-can text-emerald-600"></i> Tổng rác:</span>
+                <span class="font-black text-slate-900 text-base" id="card-cd-rac">0 đ</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-globe text-emerald-600"></i> Tổng net:</span>
+                <span class="font-black text-slate-900 text-base" id="card-cd-net">0 đ</span>
+            </div>
+
+            <div class="py-2.5 border-b border-slate-100 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> Tổng điện (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-cd-dien-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-cd-dien-kwh">(0 kWh)</div>
+            </div>
+
+            <div class="py-2.5 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-700 font-bold flex items-center gap-2"><i class="fa-solid fa-droplet text-sky-500"></i> Tổng nước (Tiền):</span>
+                    <span class="font-black text-slate-900 text-base" id="card-cd-nuoc-tien">0 đ</span>
+                </div>
+                <div class="text-right text-xs text-slate-500 font-bold" id="card-cd-nuoc-m3">(0 m³)</div>
+            </div>
+        </div>
+    </div>
+</div> 
+
+        </div>
+
 
         <!-- Tab Khu A -->
         <div id="tab-khu-a" class="tab-content hidden space-y-4">
@@ -1060,7 +1221,62 @@
             renderLichSuGiaoDich();
             renderThanhToan();
             renderChotThang();
+	    updateGeneralStatsCards();
+
         }
+	
+	function updateGeneralStatsCards() {
+    function calcStats(roomsList) {
+        let totalRooms = roomsList.length;
+        let u3 = 0, o3 = 0;
+        let tongPhong = 0, tongRac = 0, tongNet = 0;
+        let tongDienKwh = 0, tongDienTien = 0;
+        let tongNuocM3 = 0, tongNuocTien = 0;
+
+        roomsList.forEach(r => {
+            if (r.racType === 'nhieu') {
+                o3++;
+            } else {
+                u3++;
+            }
+            const calc = calcRoomTotals(r);
+            tongPhong += calc.pPhong;
+            tongRac += calc.pRac;
+            tongNet += calc.pNet;
+            tongDienKwh += calc.dienTieuThu;
+            tongDienTien += calc.pDien;
+            tongNuocM3 += calc.nuocTieuThu;
+            tongNuocTien += calc.pNuoc;
+        });
+
+        return { totalRooms, u3, o3, tongPhong, tongRac, tongNet, tongDienKwh, tongDienTien, tongNuocM3, tongNuocTien };
+    }
+
+    const roomsA = db.rooms.filter(r => r.khu === 'A');
+    const roomsB = db.rooms.filter(r => r.khu === 'B');
+    const roomsCD = db.rooms.filter(r => r.khu === 'C' || r.khu === 'D');
+
+    const statsA = calcStats(roomsA);
+    const statsB = calcStats(roomsB);
+    const statsCD = calcStats(roomsCD);
+
+    function applyStatsToDOM(prefix, s) {
+        document.getElementById(`card-${prefix}-total-rooms`).innerText = s.totalRooms;
+        document.getElementById(`card-${prefix}-u3`).innerText = s.u3;
+        document.getElementById(`card-${prefix}-o3`).innerText = s.o3;
+        document.getElementById(`card-${prefix}-phong`).innerText = formatNumber(s.tongPhong) + ' đ';
+        document.getElementById(`card-${prefix}-rac`).innerText = formatNumber(s.tongRac) + ' đ';
+        document.getElementById(`card-${prefix}-net`).innerText = formatNumber(s.tongNet) + ' đ';
+        document.getElementById(`card-${prefix}-dien-tien`).innerText = formatNumber(s.tongDienTien) + ' đ';
+        document.getElementById(`card-${prefix}-dien-kwh`).innerText = `(${formatNumber(s.tongDienKwh)} kWh)`;
+        document.getElementById(`card-${prefix}-nuoc-tien`).innerText = formatNumber(s.tongNuocTien) + ' đ';
+        document.getElementById(`card-${prefix}-nuoc-m3`).innerText = `(${formatNumber(s.tongNuocM3)} m³)`;
+    }
+
+    applyStatsToDOM('a', statsA);
+    applyStatsToDOM('b', statsB);
+    applyStatsToDOM('cd', statsCD);
+}
 
         function updateRoomProp(id, prop, val) {
             const room = db.rooms.find(r => r.id === id);
