@@ -570,6 +570,7 @@
                         <p class="text-xs text-slate-500">Theo dõi tiến độ thanh toán tiền thuê từng tháng của khách theo từng Khu</p>
                     </div>
                     <div>
+			
                         <button onclick="xuatLichSuPDF()" class="bg-gradient-to-r from-amber-100 via-yellow-100 to-amber-200 hover:from-amber-200 hover:to-amber-300 text-amber-900 border border-amber-300/60 px-4 py-2 rounded-lg text-sm font-medium shadow-xs flex items-center gap-2 transition">
                             <i class="fa-solid fa-file-pdf"></i> Xuất PDF Lịch Sử
                         </button>
@@ -601,6 +602,24 @@
                         <input type="text" id="filter-lsgd-search" oninput="renderLichSuGiaoDich()" placeholder="Nhập tên phòng cần tìm..." class="w-full px-3.5 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                 </div>
+		
+
+
+
+		<div class="flex flex-wrap items-center justify-between pt-2 border-t border-slate-200 gap-2">
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleChonTatCaHeThong(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-check-double"></i> Chọn tất cả đã đủ
+                            </button>
+                            <button onclick="toggleChonTatCaHeThong(false)" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+                                <i class="fa-solid fa-xmark"></i> Bỏ chọn tất cả
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
 
                 <div id="lsgd-tables-container" class="space-y-6">
                 </div>
@@ -831,7 +850,8 @@
                         daThuMoney: r.da_thu_money,
 			tienThieuMoney: r.tien_thieu_money || 0,
                         lsgdNote: r.lsgd_note,
-                        duCoc: r.du_coc || false
+                        duCoc: r.du_coc || false,
+			isLsgdChecked: r.is_lsgd_checked || false
                     }));
                 }
 
@@ -921,7 +941,8 @@
                         da_thu_money: r.daThuMoney,
 			tien_thieu_money: r.tienThieuMoney || 0,
                         lsgd_note: r.lsgdNote || '',
-                        du_coc: r.duCoc || false
+                        du_coc: r.duCoc || false,
+			is_lsgd_checked: r.isLsgdChecked || false
                     }));
                     await supabaseClient.from('phong_trans_tro').upsert(dataRooms);
                 }
@@ -1578,19 +1599,15 @@
                 let roomsInKhu = db.rooms.filter(r => r.khu === khu);
 
                 roomsInKhu = roomsInKhu.filter(r => {
-                    const calc = calcRoomTotals(r);
-                    const canThu = calc.tongCong;
-                    const daThu = Number(r.daThuMoney) || 0;
-                    const conLai = canThu - daThu;
-                    const isDu = conLai <= 0 && canThu > 0;
+                    const thieuVal = Number(r.tienThieuMoney) || 0;
+                    const isChecked = Boolean(r.isLsgdChecked);
 
                     let matchStatus = true;
-                    if (statusFilter === 'thieu') matchStatus = conLai > 0;
-                    else if (statusFilter === 'du') matchStatus = isDu;
+                    if (statusFilter === 'thieu') matchStatus = thieuVal > 0;
+                    else if (statusFilter === 'du') matchStatus = isChecked;
                     else if (statusFilter === 'has_note') matchStatus = Boolean(r.lsgdNote && r.lsgdNote.trim() !== '');
 
                     const matchSearch = r.name.toLowerCase().includes(searchVal);
-
                     return matchStatus && matchSearch;
                 });
 
@@ -1599,38 +1616,38 @@
 
                 let rowsHtml = '';
                 if (roomsInKhu.length === 0) {
-                    rowsHtml = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Không có phòng nào phù hợp trong Khu ${khu}</td></tr>`;
+                    rowsHtml = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic">Không có phòng nào phù hợp trong Khu ${khu}</td></tr>`;
                 } else {
                     roomsInKhu.forEach(r => {
-    const thieuVal = Number(r.tienThieuMoney) || 0;
-    const isChecked = thieuVal <= 0;
+                        const thieuVal = Number(r.tienThieuMoney) || 0;
+                        const isChecked = Boolean(r.isLsgdChecked);
 
-    rowsHtml += `
-        <tr class="hover:bg-slate-50 transition" id="lsgd-row-${r.id}">
-            <td class="p-3 font-semibold text-slate-700">Khu ${r.khu}</td>
-            <td class="p-3 font-bold text-slate-800">${r.name}</td>
-            <td class="p-3 text-center">
-                <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
-                    <input type="checkbox" id="chk-lsgd-${r.id}" ${isChecked ? 'checked' : ''} onchange="toggleLsgdThuDu('${r.id}', this.checked)" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
-                    <span id="lbl-lsgd-${r.id}" class="text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}">${isChecked ? 'Đã đủ' : 'Chưa đủ'}</span>
-                </label>
-            </td>
-            <td class="p-3">
-                <input type="text" value="${r.lsgdNote || ''}" 
-                    oninput="updateLsgdNote('${r.id}', this.value)" 
-                    placeholder="Ghi chú giao dịch riêng..." 
-                    class="w-full px-3 py-1.5 border rounded bg-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            </td>
-            <td class="p-3 text-right">
-    		<input type="text" value="${formatNumber(thieuVal)}" id="input-lsgd-thieu-${r.id}"
-    		onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
-    		onblur="updateLsgdTienThieu('${r.id}', this.value)"
-    		onkeyup="if(event.key === 'Enter') this.blur();"
-    		class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập tiền thiếu...">
-	    </td>
-        </tr>
-    `;
-});
+                        rowsHtml += `
+                            <tr class="hover:bg-slate-50 transition" id="lsgd-row-${r.id}">
+                                <td class="p-3 font-semibold text-slate-700">Khu ${r.khu}</td>
+                                <td class="p-3 font-bold text-slate-800">${r.name}</td>
+                                <td class="p-3 text-center">
+                                    <label class="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                                        <input type="checkbox" id="chk-lsgd-${r.id}" ${isChecked ? 'checked' : ''} onchange="toggleLsgdDocLap('${r.id}', this.checked)" class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500">
+                                        <span id="lbl-lsgd-${r.id}" class="text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}">${isChecked ? 'Đã xong' : 'Chưa'}</span>
+                                    </label>
+                                </td>
+                                <td class="p-3">
+                                    <input type="text" value="${r.lsgdNote || ''}" 
+                                        oninput="updateLsgdNote('${r.id}', this.value)" 
+                                        placeholder="Ghi chú giao dịch riêng..." 
+                                        class="w-full px-3 py-1.5 border rounded bg-white text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                </td>
+                                <td class="p-3 text-right">
+                                    <input type="text" value="${formatNumber(thieuVal)}" id="input-lsgd-thieu-${r.id}"
+                                        onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
+                                        onblur="updateLsgdTienThieuDocLap('${r.id}', this.value)"
+                                        onkeyup="if(event.key === 'Enter') this.blur();"
+                                        class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập số tiền...">
+                                </td>
+                            </tr>
+                        `;
+                    });
                 }
 
                 section.innerHTML = `
@@ -1646,9 +1663,9 @@
                                 <tr class="text-slate-700 font-bold border-b border-slate-200">
                                     <th class="p-3 w-16">Khu</th>
                                     <th class="p-3 w-28">Tên Phòng</th>
-                                    <th class="p-3 text-center w-32">Thu Đủ / Thiếu</th>
+                                    <th class="p-3 text-center w-32">Trạng Thái</th>
                                     <th class="p-3">Ghi Chú</th>
-				    <th class="p-3 text-right w-44">Tiền Còn Thiếu</th>
+                                    <th class="p-3 text-right w-44">Tiền Còn Thiếu</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200">
@@ -1662,47 +1679,52 @@
             });
         }
 
-        function updateLsgdDaThu(id, val) {
+        async function updateLsgdTienThieuDocLap(id, val) {
             const room = db.rooms.find(r => r.id === id);
-            if (room) {
-                room.daThuMoney = parseNumber(val);
-                saveLocalStorage();
-                renderAllTabs();
+            if (!room) return;
+
+            const cleanVal = String(val).replace(/,/g, '').trim();
+            const numVal = cleanVal === '' ? 0 : Number(cleanVal);
+            
+            room.tienThieuMoney = isNaN(numVal) ? 0 : numVal;
+
+            try {
+                await supabaseClient
+                    .from('phong_trans_tro')
+                    .update({ tien_thieu_money: room.tienThieuMoney })
+                    .eq('id', id);
+            } catch (err) {
+                console.error("Lỗi đồng bộ:", err);
             }
+
+            updateLsgdKhuSelectOptions();
         }
 
-        function toggleLsgdThuDu(id, isChecked) {
-            const room = db.rooms.find(r => r.id === id);
-            if (room) {
-                const calc = calcRoomTotals(room);
-                if (isChecked) {
-                    room.daThuMoney = calc.tongCong;
-                } else {
-                    room.daThuMoney = 0;
-                }
-                saveLocalStorage();
-                
-                const inputDaThu = document.getElementById(`input-lsgd-dathu-${id}`);
-                const elConLai = document.getElementById(`lsgd-conlai-${id}`);
-                const lbl = document.getElementById(`lbl-lsgd-${id}`);
+        async function toggleLsgdDocLap(id, isChecked) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
 
-                const canThu = calc.tongCong;
-                const daThu = Number(room.daThuMoney) || 0;
-                const conLai = canThu - daThu;
+    room.isLsgdChecked = isChecked;
+    const lbl = document.getElementById(`lbl-lsgd-${id}`);
+    if (lbl) {
+        lbl.innerText = isChecked ? 'Đã xong' : 'Chưa';
+        lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
+    }
 
-                if (inputDaThu) inputDaThu.value = room.daThuMoney;
-                if (elConLai) {
-                    elConLai.innerText = `${formatNumber(conLai)} đ`;
-                    elConLai.className = `p-3 font-bold text-right ${conLai > 0 ? 'text-rose-600' : 'text-emerald-600'}`;
-                }
-                if (lbl) {
-                    lbl.innerText = isChecked ? 'Đã đủ' : 'Chưa đủ';
-                    lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
-                }
+    try {
+        await supabaseClient
+            .from('phong_trans_tro')
+            .update({ 
+                is_lsgd_checked: room.isLsgdChecked // Lưu trạng thái tích chọn lên Supabase
+            })
+            .eq('id', id);
+    } catch (err) {
+        console.error("Lỗi cập nhật trạng thái tích chọn:", err);
+    }
 
-                updateLsgdKhuSelectOptions();
-            }
-        }
+    updateLsgdKhuSelectOptions();
+}
+
 
         function updateLsgdNote(id, val) {
             const room = db.rooms.find(r => r.id === id);
@@ -2604,49 +2626,30 @@ function updateCocKhuSelectOptions() {
             loadLocalStorage();
         };
 
-async function updateLsgdTienThieu(id, val) {
+	async function updateLsgdTienThieu(id, val) {
     const room = db.rooms.find(r => r.id === id);
     if (!room) return;
 
-    const numVal = parseNumber(val);
-    room.tienThieuMoney = numVal;
+    // Lọc bỏ dấu phẩy để lấy đúng con số thô bạn tự gõ vào
+    const cleanVal = String(val).replace(/,/g, '').trim();
+    const numVal = cleanVal === '' ? 0 : Number(cleanVal);
+    
+    // Gán trực tiếp giá trị thủ công
+    room.tienThieuMoney = isNaN(numVal) ? 0 : numVal;
 
-    // Cập nhật lại giá trị hiển thị trên ô input theo định dạng số đẹp
-    const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
-    if (inputThieu) {
-        inputThieu.value = formatNumber(numVal);
-    }
-
-    // Nếu nhập tiền thiếu > 0 thì tự động bỏ tích "Đã đủ"
-    const chk = document.getElementById(`chk-lsgd-${id}`);
-    const lbl = document.getElementById(`lbl-lsgd-${id}`);
-    if (numVal > 0) {
-        if (chk) chk.checked = false;
-        if (lbl) {
-            lbl.innerText = 'Chưa đủ';
-            lbl.className = 'text-xs font-medium text-slate-500';
-        }
-    }
-
-    // 1. Lưu vào RAM/LocalStorage
-    saveLocalStorage();
-
-    // 2. Gửi trực tiếp dòng phòng này lên Supabase ngay lập tức
+    // Cập nhật thẳng lên cơ sở dữ liệu Supabase mà không qua bất kỳ hàm trung gian nào khác
     try {
-        const { error } = await supabaseClient
+        await supabaseClient
             .from('phong_trans_tro')
-            .update({ tien_thieu_money: numVal })
+            .update({ tien_thieu_money: room.tienThieuMoney })
             .eq('id', id);
-
-        if (error) throw error;
-        console.log(`Đã lưu tiền thiếu phòng ${room.name}:`, numVal);
     } catch (err) {
-        console.error("Lỗi cập nhật tiền thiếu lên Supabase:", err);
+        console.error("Lỗi đồng bộ:", err);
     }
 
-    // 3. Cập nhật lại dropdown lọc Khu & Tab Thanh toán
+    // Cập nhật lại tổng tiền trên giao diện
     updateLsgdKhuSelectOptions();
-    if (typeof renderThanhToan === 'function') {
+    if (typeof renderThanhTloan === 'function') {
         renderThanhToan();
     }
 }
@@ -2655,12 +2658,22 @@ async function toggleLsgdThuDu(id, isChecked) {
     const room = db.rooms.find(r => r.id === id);
     if (!room) return;
 
+    const calc = calcRoomTotals(room);
     const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
     const lbl = document.getElementById(`lbl-lsgd-${id}`);
 
     if (isChecked) {
-        room.tienThieuMoney = 0; // Tích chọn "Đã đủ" thì số tiền thiếu về 0
-        if (inputThieu) inputThieu.value = "0";
+        room.daThuMoney = calc.tongCong;
+        room.tienThieuMoney = 0; 
+        if (inputThieu) inputThieu.value = formatNumber(0);
+    } else {
+        room.daThuMoney = 0;
+        if (inputThieu) {
+            const currentVal = parseNumber(inputThieu.value);
+            // Nếu ô tiền thiếu đang bằng 0 mà bỏ tích, gán mặc định bằng tổng tiền phòng
+            room.tienThieuMoney = currentVal > 0 ? currentVal : calc.tongCong;
+            inputThieu.value = formatNumber(room.tienThieuMoney);
+        }
     }
 
     if (lbl) {
@@ -2668,23 +2681,50 @@ async function toggleLsgdThuDu(id, isChecked) {
         lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
     }
 
-    saveLocalStorage();
-
+    // Cập nhật trực tiếp lên Supabase
     try {
-        await supabaseClient
+        const { error } = await supabaseClient
             .from('phong_trans_tro')
-            .update({ tien_thieu_money: room.tienThieuMoney })
+            .update({ 
+                da_thu_money: room.daThuMoney,
+                tien_thieu_money: room.tienThieuMoney 
+            })
             .eq('id', id);
+
+        if (error) throw error;
     } catch (err) {
-        console.error("Lỗi cập nhật trạng thái đủ/thiếu lên Supabase:", err);
+        console.error("Lỗi cập nhật trạng thái lên Supabase:", err);
     }
 
+    // Cập nhật lại giao diện
     updateLsgdKhuSelectOptions();
+    if (typeof renderLichSuGiaoDich === 'function') {
+        renderLichSuGiaoDich();
+    }
     if (typeof renderThanhToan === 'function') {
         renderThanhToan();
     }
 }    
 
+	async function toggleChonTatCaHeThong(isChecked) {
+    // 1. Cập nhật dữ liệu biến db cục bộ ngay lập tức
+    		db.rooms.forEach(r => {
+       		r.isLsgdChecked = isChecked;
+    });
+
+    // 2. Vẽ lại giao diện ngay để người dùng thấy kết quả tức thì (không cần đợi mạng)
+    		renderLichSuGiaoDich();
+
+    // 3. Gửi đồng bộ lên Supabase ngầm ở phía sau
+    try {
+        	await supabaseClient
+            	.from('phong_trans_tro')
+            	.update({ is_lsgd_checked: isChecked })
+            	.in('id', db.rooms.map(r => r.id));
+		    	} catch (err) {
+        	console.error("Lỗi đồng bộ hàng loạt lên Supabase:", err);
+    	}
+}
 
     </script>
 
