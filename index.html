@@ -1623,10 +1623,10 @@
             </td>
             <td class="p-3 text-right">
     		<input type="text" value="${formatNumber(thieuVal)}" id="input-lsgd-thieu-${r.id}"
-        		onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
-        		onblur="this.value = formatNumber(parseNumber(this.value)); updateLsgdTienThieu('${r.id}', this.value);"
-        		onkeyup="if(event.key === 'Enter') this.blur();"
-        		class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập tiền thiếu...">
+    		onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
+    		onblur="updateLsgdTienThieu('${r.id}', this.value)"
+    		onkeyup="if(event.key === 'Enter') this.blur();"
+    		class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập tiền thiếu...">
 	    </td>
         </tr>
     `;
@@ -2604,43 +2604,87 @@ function updateCocKhuSelectOptions() {
             loadLocalStorage();
         };
 
-    function updateLsgdTienThieu(id, val) {
+async function updateLsgdTienThieu(id, val) {
     const room = db.rooms.find(r => r.id === id);
-    if (room) {
-        room.tienThieuMoney = parseNumber(val);
-        saveLocalStorage();
-        // Cập nhật lại các số liệu tổng tiền thiếu trên thanh lọc khu ngay lập tức
-        updateLsgdKhuSelectOptions();
-        // Nếu đang ở tab thanh toán, cập nhật lại để các mục chọn nhanh tổng khu phản ánh đúng giá trị mới
-        if (typeof renderThanhToan === 'function') {
-            renderThanhToan();
-        }
-    }
-}
+    if (!room) return;
 
-function toggleLsgdThuDu(id, isChecked) {
-    const room = db.rooms.find(r => r.id === id);
-    if (room) {
-        const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
-        const lbl = document.getElementById(`lbl-lsgd-${id}`);
-        
-        if (isChecked) {
-            room.tienThieuMoney = 0; // Tích đã đủ thì tiền thiếu về 0
-            if (inputThieu) inputThieu.value = "0";
-        }
-        
+    const numVal = parseNumber(val);
+    room.tienThieuMoney = numVal;
+
+    // Cập nhật lại giá trị hiển thị trên ô input theo định dạng số đẹp
+    const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
+    if (inputThieu) {
+        inputThieu.value = formatNumber(numVal);
+    }
+
+    // Nếu nhập tiền thiếu > 0 thì tự động bỏ tích "Đã đủ"
+    const chk = document.getElementById(`chk-lsgd-${id}`);
+    const lbl = document.getElementById(`lbl-lsgd-${id}`);
+    if (numVal > 0) {
+        if (chk) chk.checked = false;
         if (lbl) {
-            lbl.innerText = isChecked ? 'Đã đủ' : 'Chưa đủ';
-            lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
-        }
-
-        saveLocalStorage();
-        updateLsgdKhuSelectOptions();
-        if (typeof renderThanhToan === 'function') {
-            renderThanhToan();
+            lbl.innerText = 'Chưa đủ';
+            lbl.className = 'text-xs font-medium text-slate-500';
         }
     }
+
+    // 1. Lưu vào RAM/LocalStorage
+    saveLocalStorage();
+
+    // 2. Gửi trực tiếp dòng phòng này lên Supabase ngay lập tức
+    try {
+        const { error } = await supabaseClient
+            .from('phong_trans_tro')
+            .update({ tien_thieu_money: numVal })
+            .eq('id', id);
+
+        if (error) throw error;
+        console.log(`Đã lưu tiền thiếu phòng ${room.name}:`, numVal);
+    } catch (err) {
+        console.error("Lỗi cập nhật tiền thiếu lên Supabase:", err);
+    }
+
+    // 3. Cập nhật lại dropdown lọc Khu & Tab Thanh toán
+    updateLsgdKhuSelectOptions();
+    if (typeof renderThanhToan === 'function') {
+        renderThanhToan();
+    }
 }
+
+async function toggleLsgdThuDu(id, isChecked) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
+
+    const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
+    const lbl = document.getElementById(`lbl-lsgd-${id}`);
+
+    if (isChecked) {
+        room.tienThieuMoney = 0; // Tích chọn "Đã đủ" thì số tiền thiếu về 0
+        if (inputThieu) inputThieu.value = "0";
+    }
+
+    if (lbl) {
+        lbl.innerText = isChecked ? 'Đã đủ' : 'Chưa đủ';
+        lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
+    }
+
+    saveLocalStorage();
+
+    try {
+        await supabaseClient
+            .from('phong_trans_tro')
+            .update({ tien_thieu_money: room.tienThieuMoney })
+            .eq('id', id);
+    } catch (err) {
+        console.error("Lỗi cập nhật trạng thái đủ/thiếu lên Supabase:", err);
+    }
+
+    updateLsgdKhuSelectOptions();
+    if (typeof renderThanhToan === 'function') {
+        renderThanhToan();
+    }
+}    
+
 
     </script>
 
