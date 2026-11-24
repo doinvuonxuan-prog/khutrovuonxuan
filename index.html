@@ -1501,13 +1501,21 @@
             }
         }
 
-        function updateRoomCocNoteText(id, val) {
-            const room = db.rooms.find(r => r.id === id);
-            if (room) {
-                room.cocNote = val;
-                saveLocalStorage();
-            }
-        }
+        async function updateRoomCocNoteText(id, val) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
+
+    room.cocNote = val;
+    try {
+        const { error } = await supabaseClient
+            .from('phong_trans_tro')
+            .update({ coc_note: room.cocNote })
+            .eq('id', id);
+        if (error) throw error;
+    } catch (err) {
+        console.error("Lỗi lưu ghi chú cọc:", err);
+    }
+}
 
         function getFilteredRoomsForCoc() {
             const khuFilter = document.getElementById('filter-coc-khu').value;
@@ -1590,25 +1598,48 @@
             });
         }
 
-        function toggleDuCoc(id, isChecked) {
-            const room = db.rooms.find(r => r.id === id);
-            if (room) {
-                room.duCoc = isChecked;
-                saveLocalStorage();
-                renderTienCoc();
-            }
-        }
+        async function toggleDuCoc(id, isChecked) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
 
-        function ghiNhanCoc(id) {
-            const room = db.rooms.find(r => r.id === id);
-            const inputVal = parseNumber(document.getElementById(`input-coc-${id}`).value);
-            if (room && inputVal !== 0) {
-                room.cocNhan = (Number(room.cocNhan) || 0) + inputVal;
-                saveLocalStorage();
-                renderAllTabs();
-                showAlert("Thành Công", `Đã cập nhật tiền cọc cho phòng ${room.name} (Cộng thêm/bớt: ${formatNumber(inputVal)} đ)!`);
-            }
+    room.duCoc = Boolean(isChecked);
+    try {
+        const { error } = await supabaseClient
+            .from('phong_trans_tro')
+            .update({ du_coc: room.duCoc })
+            .eq('id', id);
+        if (error) throw error;
+    } catch (err) {
+        console.error("Lỗi cập nhật trạng thái Đủ cọc:", err);
+        showAlert("Lỗi", "Không thể lưu trạng thái Đủ cọc lên Supabase!", false);
+    }
+    renderTienCoc();
+}
+
+        async function ghiNhanCoc(id) {
+    const room = db.rooms.find(r => r.id === id);
+    const inputEl = document.getElementById(`input-coc-${id}`);
+    const inputVal = inputEl ? parseNumber(inputEl.value) : 0;
+
+    if (room && inputVal !== 0) {
+        const newCocNhan = (Number(room.cocNhan) || 0) + inputVal;
+        try {
+            const { error } = await supabaseClient
+                .from('phong_trans_tro')
+                .update({ coc_nhan: newCocNhan })
+                .eq('id', id);
+            if (error) throw error;
+
+            room.cocNhan = newCocNhan;
+            if (inputEl) inputEl.value = '';
+            renderTienCoc();
+            showAlert("Thành Công", `Đã cập nhật tiền cọc cho phòng ${room.name} (${inputVal > 0 ? '+' : ''}${formatNumber(inputVal)} đ)!`);
+        } catch (err) {
+            console.error("Lỗi lưu tiền cọc lên Supabase:", err);
+            showAlert("Lỗi", "Không thể lưu tiền cọc lên Supabase!", false);
         }
+    }
+}
 
         function renderLichSuGiaoDich() {
             updateLsgdKhuSelectOptions();
@@ -1669,10 +1700,10 @@
                                 </td>
                                 <td class="p-3 text-right">
                                     <input type="text" value="${formatNumber(thieuVal)}" id="input-lsgd-thieu-${r.id}"
-                                        onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
-                                        onblur="updateLsgdTienThieuDocLap('${r.id}', this.value)"
-                                        onkeyup="if(event.key === 'Enter') this.blur();"
-                                        class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập số tiền...">
+    					onfocus="this.value = (Number(${thieuVal}) === 0) ? '' : ${thieuVal}; this.select();" 
+    					onblur="updateLsgdTienThieuDocLap('${r.id}', this.value)"
+    					onkeydown="if(event.key === 'Enter') { event.preventDefault(); updateLsgdTienThieuDocLap('${r.id}', this.value); this.blur(); }"
+    					class="w-36 px-2.5 py-1.5 border rounded text-xs font-semibold text-slate-800 bg-white text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none" placeholder="Nhập số tiền...">
                                 </td>
                             </tr>
                         `;
@@ -1708,24 +1739,6 @@
             });
         }
 
-        async function updateLsgdTienThieuDocLap(id, val) {
-            const room = db.rooms.find(r => r.id === id);
-            if (!room) return;
-
-            const cleanVal = String(val).replace(/,/g, '').trim();
-            const numVal = cleanVal === '' ? 0 : Number(cleanVal);
-            
-            room.tienThieuMoney = isNaN(numVal) ? 0 : numVal;
-
-            try {
-                await supabaseClient
-                    .from('phong_trans_tro')
-                    .update({ tien_thieu_money: room.tienThieuMoney })
-                    .eq('id', id);
-            } catch (err) {
-                console.error("Lỗi đồng bộ:", err);
-            }
-
             updateLsgdKhuSelectOptions();
         }
 
@@ -1755,13 +1768,47 @@
 }
 
 
-        function updateLsgdNote(id, val) {
-            const room = db.rooms.find(r => r.id === id);
-            if (room) {
-                room.lsgdNote = val;
-                saveLocalStorage();
-            }
-        }
+        async function updateLsgdNote(id, val) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
+
+    room.lsgdNote = val;
+    try {
+        const { error } = await supabaseClient
+            .from('phong_trans_tro')
+            .update({ lsgd_note: room.lsgdNote })
+            .eq('id', id);
+        if (error) throw error;
+    } catch (err) {
+        console.error("Lỗi lưu ghi chú lịch sử giao dịch:", err);
+    }
+}
+
+async function updateLsgdTienThieuDocLap(id, val) {
+    const room = db.rooms.find(r => r.id === id);
+    if (!room) return;
+
+    const cleanVal = String(val).replace(/,/g, '').trim();
+    const numVal = cleanVal === '' ? 0 : Number(cleanVal);
+    room.tienThieuMoney = isNaN(numVal) ? 0 : numVal;
+
+    const inputEl = document.getElementById(`input-lsgd-thieu-${id}`);
+    if (inputEl && document.activeElement !== inputEl) {
+        inputEl.value = formatNumber(room.tienThieuMoney);
+    }
+
+    try {
+        const { error } = await supabaseClient
+            .from('phong_trans_tro')
+            .update({ tien_thieu_money: room.tienThieuMoney })
+            .eq('id', id);
+        if (error) throw error;
+    } catch (err) {
+        console.error("Lỗi đồng bộ tiền còn thiếu:", err);
+    }
+
+    updateLsgdKhuSelectOptions();
+}
 
         // Biến lưu vị trí bảng thanh toán đang chọn (Mặc định 0 là Bảng B)
         let currentThanhToanSubTab = 0;
@@ -2655,86 +2702,7 @@ function updateCocKhuSelectOptions() {
             loadLocalStorage();
         };
 
-	async function updateLsgdTienThieu(id, val) {
-    const room = db.rooms.find(r => r.id === id);
-    if (!room) return;
-
-    // Lọc bỏ dấu phẩy để lấy đúng con số thô bạn tự gõ vào
-    const cleanVal = String(val).replace(/,/g, '').trim();
-    const numVal = cleanVal === '' ? 0 : Number(cleanVal);
-    
-    // Gán trực tiếp giá trị thủ công
-    room.tienThieuMoney = isNaN(numVal) ? 0 : numVal;
-
-    // Cập nhật thẳng lên cơ sở dữ liệu Supabase mà không qua bất kỳ hàm trung gian nào khác
-    try {
-        await supabaseClient
-            .from('phong_trans_tro')
-            .update({ tien_thieu_money: room.tienThieuMoney })
-            .eq('id', id);
-    } catch (err) {
-        console.error("Lỗi đồng bộ:", err);
-    }
-
-    // Cập nhật lại tổng tiền trên giao diện
-    updateLsgdKhuSelectOptions();
-    if (typeof renderThanhTloan === 'function') {
-        renderThanhToan();
-    }
-}
-
-async function toggleLsgdThuDu(id, isChecked) {
-    const room = db.rooms.find(r => r.id === id);
-    if (!room) return;
-
-    const calc = calcRoomTotals(room);
-    const inputThieu = document.getElementById(`input-lsgd-thieu-${id}`);
-    const lbl = document.getElementById(`lbl-lsgd-${id}`);
-
-    if (isChecked) {
-        room.daThuMoney = calc.tongCong;
-        room.tienThieuMoney = 0; 
-        if (inputThieu) inputThieu.value = formatNumber(0);
-    } else {
-        room.daThuMoney = 0;
-        if (inputThieu) {
-            const currentVal = parseNumber(inputThieu.value);
-            // Nếu ô tiền thiếu đang bằng 0 mà bỏ tích, gán mặc định bằng tổng tiền phòng
-            room.tienThieuMoney = currentVal > 0 ? currentVal : calc.tongCong;
-            inputThieu.value = formatNumber(room.tienThieuMoney);
-        }
-    }
-
-    if (lbl) {
-        lbl.innerText = isChecked ? 'Đã đủ' : 'Chưa đủ';
-        lbl.className = `text-xs font-medium ${isChecked ? 'text-emerald-700 font-bold' : 'text-slate-500'}`;
-    }
-
-    // Cập nhật trực tiếp lên Supabase
-    try {
-        const { error } = await supabaseClient
-            .from('phong_trans_tro')
-            .update({ 
-                da_thu_money: room.daThuMoney,
-                tien_thieu_money: room.tienThieuMoney 
-            })
-            .eq('id', id);
-
-        if (error) throw error;
-    } catch (err) {
-        console.error("Lỗi cập nhật trạng thái lên Supabase:", err);
-    }
-
-    // Cập nhật lại giao diện
-    updateLsgdKhuSelectOptions();
-    if (typeof renderLichSuGiaoDich === 'function') {
-        renderLichSuGiaoDich();
-    }
-    if (typeof renderThanhToan === 'function') {
-        renderThanhToan();
-    }
-}    
-
+	
 	async function toggleChonTatCaHeThong(isChecked) {
     // 1. Cập nhật dữ liệu biến db cục bộ ngay lập tức
     		db.rooms.forEach(r => {
