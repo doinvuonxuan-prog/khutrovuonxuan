@@ -1737,7 +1737,7 @@
 
                 container.appendChild(section);
             });
-        }
+        
 
             updateLsgdKhuSelectOptions();
         }
@@ -1883,13 +1883,25 @@ async function updateLsgdTienThieuDocLap(id, val) {
                               <input type="text" value="${row.noiDung || ''}" onchange="updateThanhToanRow3(${tIndex}, ${index}, 'noiDung', this.value)" placeholder="Nhập nội dung..." class="w-72 px-3 py-1.5 border rounded bg-white text-xs">
                               <select onchange="chonTongKhuThanhToan3(${tIndex}, ${index}, this.value)" class="w-36 px-2 py-1.5 border rounded bg-slate-50 text-xs font-semibold text-slate-700" title="Chọn nhanh tổng khu">
                                  <option value="">Chọn mục </option>
-                                    <optgroup label="--- TỔNG KHU ---">                                        <option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>                                        <option value="B">Tổng Khu B (${formatNumber(getKhuTotal('B'))})</option>                                        <option value="C">Tổng Khu C (${formatNumber(getKhuTotal('C'))})</option>                                        <option value="D">Tổng Khu D (${formatNumber(getKhuTotal('D'))})</option>
+
+                                    <optgroup label="--- TỔNG KHU ---">
+					<option value="A">Tổng Khu A (${formatNumber(getKhuTotal('A'))})</option>                                        
+					<option value="CD">Tổng Khu CD (${formatNumber(getKhuTotal('C') + getKhuTotal('D'))})</option>
+    				    </optgroup>
+
+                                    <optgroup label="--- TIỀN TRỌ CÒN THIẾU KHU ---">
+					<option value="THIEU_A">Tiền trọ còn thiếu khu A (-${formatNumber(getKhuTotalThieu('A'))})</option>
+					<option value="THIEU_CD">Tiền trọ còn thiếu khu CD (-${formatNumber(getKhuTotalThieu('C') + getKhuTotalThieu('D'))})</option>
+    				    </optgroup>
+
+                                    <optgroup label="--- TỔNG RÁC KHU ---">
+					<option value="RAC_A">Tổng Rác Khu A (${formatNumber(getKhuTotalRac('A'))})</option>
+					<option value="RAC_CD">Tổng Rác Khu CD (${formatNumber(getKhuTotalRac('C') + getKhuTotalRac('D'))})</option>
                                     </optgroup>
-                                    <optgroup label="--- TIỀN TRỌ CÒN THIẾU KHU ---">                                        <option value="THIEU_A">Tiền trọ còn thiếu khu A (-${formatNumber(getKhuTotalThieu('A'))})</option>                                        <option value="THIEU_B">Tiền trọ còn thiếu khu B (-${formatNumber(getKhuTotalThieu('B'))})</option>                                        <option value="THIEU_C">Tiền trọ còn thiếu khu C (-${formatNumber(getKhuTotalThieu('C'))})</option>                                        <option value="THIEU_D">Tiền trọ còn thiếu khu D (-${formatNumber(getKhuTotalThieu('D'))})</option>
-                                    </optgroup>
-                                    <optgroup label="--- TỔNG RÁC KHU ---">                                        <option value="RAC_A">Tổng Rác Khu A (${formatNumber(getKhuTotalRac('A'))})</option>                                        <option value="RAC_B">Tổng Rác Khu B (${formatNumber(getKhuTotalRac('B'))})</option>                                        <option value="RAC_C">Tổng Rác Khu C (${formatNumber(getKhuTotalRac('C'))})</option>                                        <option value="RAC_D">Tổng Rác Khu D (${formatNumber(getKhuTotalRac('D'))})</option>
-                                    </optgroup>
-                                    <optgroup label="--- TỔNG CỌC KHU ---">                                        <option value="COC_NHAN_A">Tổng cọc đã nhận Khu A (${formatNumber(getKhuTotalCocNhan('A'))})</option>                                        <option value="COC_NHAN_B">Tổng cọc đã nhận Khu B (${formatNumber(getKhuTotalCocNhan('B'))})</option>                                        <option value="COC_NHAN_C">Tổng cọc đã nhận Khu C (${formatNumber(getKhuTotalCocNhan('C'))})</option>                                        <option value="COC_NHAN_D">Tổng cọc đã nhận Khu D (${formatNumber(getKhuTotalCocNhan('D'))})</option>
+
+                                    <optgroup label="--- TỔNG CỌC KHU ---">
+					<option value="COC_NHAN_A">Tổng cọc đã nhận Khu A (${formatNumber(getKhuTotalCocNhan('A'))})</option>
+					<option value="COC_NHAN_CD">Tổng cọc đã nhận Khu CD (${formatNumber(getKhuTotalCocNhan('C') + getKhuTotalCocNhan('D'))})</option>
                                     </optgroup>
                                 </select>
                             </div>
@@ -1975,6 +1987,8 @@ async function updateLsgdTienThieuDocLap(id, val) {
             if (!selectedValue) return;
             const row = db.thanhToanTables[tIndex]?.rows[index];
             if (!row || !row.id) return;
+
+	    const getSumByKhu = (fn, khuCode) => khuCode === 'CD' ? (fn('C') + fn('D')) : fn(khuCode);
 
             let noiDungMoi = '';
             let soTienMoi = 0;
